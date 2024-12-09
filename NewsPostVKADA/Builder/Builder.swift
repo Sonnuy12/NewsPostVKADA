@@ -19,7 +19,8 @@ class Builder {
     
     static func CreateNewsView() -> UIViewController {
         let view = NewsView()
-        let presenter = NewsPresenter(view: view)
+        let model = NewsModel()
+        let presenter = NewsPresenter(view: view, model: model)
         view.presenter = presenter
         return view
     }

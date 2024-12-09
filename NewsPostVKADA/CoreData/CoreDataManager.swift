@@ -8,11 +8,13 @@
 import Foundation
 import CoreData
 
-class CoreDataManager {
+class CoreDataManager: NSObject {
     
     static let shared = CoreDataManager()
     
-    private init() {}
+    private override init() {}
+    
+    private var fetchedResultsController: NSFetchedResultsController<NewsEntity>?
     
     var context: NSManagedObjectContext {
         return persistentContainer.viewContext
@@ -43,7 +45,7 @@ class CoreDataManager {
 }
 
 extension CoreDataManager {
-    
+    // MARK: - News CRUD Operations
     func addNews(title: String, descriptionText: String, imageURL: String) {
         let news = NewsEntity(context: context)
         news.title = title
@@ -65,5 +67,42 @@ extension CoreDataManager {
     func deleteNews(_ news: NewsEntity) {
         context.delete(news)
         saveContext()
+    }
+    
+    // MARK: - FetchedResultsController
+    func setupNewsFetchedResultsController(delegate: NSFetchedResultsControllerDelegate) {
+        let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        
+        controller.delegate = delegate
+        self.fetchedResultsController = controller
+        
+        do {
+            try controller.performFetch()
+        } catch {
+            print("Error fetching news: \(error)")
+        }
+    }
+    
+    func getAllNews() -> [NewsEntity]? {
+        return fetchedResultsController?.fetchedObjects
+    }
+}
+
+// MARK: - Example Delegate Implementation
+
+extension CoreDataManager: NSFetchedResultsControllerDelegate {
+    
+    // Этот метод вызывается, когда данные изменяются в Core Data.
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // Уведомите UI об изменениях
+        print("Данные в Core Data обновлены. Требуется обновить UI.")
     }
 }

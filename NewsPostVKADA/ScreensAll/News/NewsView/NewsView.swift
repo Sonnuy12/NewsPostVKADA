@@ -8,10 +8,12 @@
 import UIKit
 
 protocol NewsViewProtocol: AnyObject {
-    
+    func updateUI()
 }
 
 class NewsView: UIViewController, NewsViewProtocol {
+   
+    
     
     // MARK: - Properties
     var presenter: NewsPresenterProtocol?
@@ -19,6 +21,9 @@ class NewsView: UIViewController, NewsViewProtocol {
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    }
+    
+    func updateUI() {
+        //тут будет код для обновления UI:)
     }
 }

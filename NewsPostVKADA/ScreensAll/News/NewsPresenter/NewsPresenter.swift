@@ -16,10 +16,16 @@ class NewsPresenter: NewsPresenterProtocol {
 
 // MARK: - Properties
     weak var view: NewsViewProtocol?
-    
-    init(view: NewsViewProtocol) {
+    private var model: NewsModelProtocol?
+
+    init(view: NewsViewProtocol, model: NewsModelProtocol) {
         self.view = view
+        self.model = model
     }
     
 // MARK: - Func
+    func loadData() {
+        let news = model?.fetchNews()
+          view?.updateUI()
+      }
 }

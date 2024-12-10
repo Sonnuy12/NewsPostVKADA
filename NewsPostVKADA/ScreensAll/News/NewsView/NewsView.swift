@@ -14,14 +14,20 @@ protocol NewsViewProtocol: AnyObject {
 class NewsView: UIViewController, NewsViewProtocol {
    
     lazy var newsCollection: UICollectionView = {
+        let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 20
+        layout.minimumInteritemSpacing = 20
         
         $0.delegate = self
         $0.dataSource = self
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
         
+        
         return $0
-    }(UICollectionView())
+    }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
     
     // MARK: - Properties

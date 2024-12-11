@@ -9,14 +9,17 @@ import Foundation
 
 
 protocol NewsPresenterProtocol: AnyObject {
+    func loadData()
+    var newsList: [NewsEntity] {get set}
     
 }
 
 class NewsPresenter: NewsPresenterProtocol {
-
+    
+     var newsList: [NewsEntity] = []
 // MARK: - Properties
     weak var view: NewsViewProtocol?
-    private var model: NewsModelProtocol?
+    private var model: NewsModelProtocol
 
     init(view: NewsViewProtocol, model: NewsModelProtocol) {
         self.view = view
@@ -25,7 +28,8 @@ class NewsPresenter: NewsPresenterProtocol {
     
 // MARK: - Func
     func loadData() {
-        let news = model?.fetchNews()
-          view?.updateUI()
+        let news = model.fetchNews()
+        view?.updateNewsList(news)
       }
+    
 }

@@ -9,12 +9,11 @@ import UIKit
 // MARK: - протокол для создания кастомной ячейки
 protocol SetupNewCell: AnyObject {
     static var reuseId: String { get }
-    
-    func setupElements()
     func setupConstraints()
 }
 // MARK: - создание кастомной ячейки
 class CustomNewsCell: UICollectionViewCell, SetupNewCell {
+    
     static var reuseId: String = "CustomNewsCell"
     
     lazy var newsImage: UIImageView = {
@@ -81,7 +80,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         super.init(frame: frame)
         setupItemsInContentViews()
         
-        setupElements()
+      
     }
     
     private func setupItemsInContentViews() {
@@ -92,12 +91,34 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         setupConstraints()
     }
     
-    func setupElements() {
-       
-    }
     
      func setupConstraints() {
-        
+         NSLayoutConstraint.activate([
+            
+             newsImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+             newsImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+             newsImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+             newsImage.heightAnchor.constraint(equalToConstant: 260),
+             
+             isFavourite.topAnchor.constraint(equalTo: newsImage.topAnchor, constant: 20),
+             isFavourite.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -20),
+             
+             HstackSiteData.topAnchor.constraint(equalTo: newsImage.bottomAnchor, constant: 10),
+             HstackSiteData.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor, constant: 15),
+             HstackSiteData.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -15),
+             HstackSiteData.heightAnchor.constraint(equalToConstant: 20),
+             
+             mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
+             mainLabel.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor),
+             mainLabel.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor),
+             
+             descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
+             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
+             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
+             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
+             
+             
+         ])
     }
     
     required init?(coder: NSCoder) {

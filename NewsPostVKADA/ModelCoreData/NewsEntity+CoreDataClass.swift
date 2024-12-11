@@ -23,7 +23,7 @@ extension NewsEntity {
     @NSManaged public var attribute: String?
     @NSManaged public var datePublicationPost: Date?
     @NSManaged public var descriptionText: String?
-    @NSManaged public var imageURL: String?
+    @NSManaged public var imageURL: String
     @NSManaged public var isFavourite: Bool
     @NSManaged public var title: String?
     @NSManaged public var website: String?

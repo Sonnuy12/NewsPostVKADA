@@ -97,7 +97,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     }
     
      func setupConstraints() {
-        <#code#>
+        
     }
     
     required init?(coder: NSCoder) {

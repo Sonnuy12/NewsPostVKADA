@@ -27,7 +27,7 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         $0.delegate = self
         $0.dataSource = self
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
+        $0.register(CustomVKNewsCell.self, forCellWithReuseIdentifier: CustomVKNewsCell.reuseId)
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     

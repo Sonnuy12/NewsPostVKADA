@@ -9,15 +9,20 @@ import Foundation
 
 
 protocol NewsPresenterProtocol: AnyObject {
-    
+    func loadData()
+    var newsList: [NewsEntity] {get set}
+    func filterNews(_ keyword: String)
+    func numberOfItems() -> Int
 }
 
 class NewsPresenter: NewsPresenterProtocol {
-
+    
+     var filteredNews: [NewsEntity] = []
+     var newsList: [NewsEntity] = []
 // MARK: - Properties
     weak var view: NewsViewProtocol?
-    private var model: NewsModelProtocol?
-
+    private var model: NewsModelProtocol
+   
     init(view: NewsViewProtocol, model: NewsModelProtocol) {
         self.view = view
         self.model = model
@@ -25,7 +30,36 @@ class NewsPresenter: NewsPresenterProtocol {
     
 // MARK: - Func
     func loadData() {
-        let news = model?.fetchNews()
-          view?.updateUI()
+        let news = model.fetchNews()
+        view?.updateNewsList(news)
       }
+   
+    func fetchNews() {
+           // Загружаем новости (например, из CoreData или API)
+        let coreDataManager = CoreDataManager.shared
+        newsList = coreDataManager.fetchNews()
+           filteredNews = newsList
+           view?.reloadData()
+       }
+    
+    func filterNews(_ keyword: String) {
+            if keyword.isEmpty {
+                filteredNews = newsList
+            } else {
+                filteredNews = newsList.filter { news in
+                    news.title?.localizedCaseInsensitiveContains(keyword) == true ||
+                    news.descriptionText?.localizedCaseInsensitiveContains(keyword) == true
+                }
+            }
+            view?.reloadData()
+        }
+
+        func numberOfItems() -> Int {
+            return filteredNews.count
+        }
+
+        func news(at indexPath: IndexPath) -> NewsEntity {
+            return filteredNews[indexPath.item]
+        }
+    
 }

@@ -119,7 +119,6 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
-            
         ])
     }
 }

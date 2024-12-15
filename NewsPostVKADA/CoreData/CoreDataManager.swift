@@ -109,7 +109,6 @@ extension CoreDataManager {
 // MARK: - Example Delegate Implementation
 
 extension CoreDataManager: NSFetchedResultsControllerDelegate {
-    
     // Этот метод вызывается, когда данные изменяются в Core Data.
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         // Уведомите UI об изменениях

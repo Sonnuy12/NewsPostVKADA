@@ -14,7 +14,6 @@ protocol NewsViewProtocol: AnyObject {
 
 class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
    
-    
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
@@ -52,6 +51,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }(UILabel())
     
     // MARK: - Properties
+    //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
     var presenter: NewsPresenterProtocol!
     
     // MARK: - Func
@@ -63,9 +63,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         presenter?.loadData()
         setupConstaints()
     }
-    
-    
-    private func setupConstaints() {
+        private func setupConstaints() {
         NSLayoutConstraint.activate([
             newsCollection.topAnchor.constraint(equalTo: NewsLabel.bottomAnchor, constant: 15),
             newsCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -76,7 +74,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             NewsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             NewsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -16),
             NewsLabel.heightAnchor.constraint(equalToConstant: 40),
-           
         ])
     }
     
@@ -84,7 +81,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         presenter?.newsList = news
         newsCollection.reloadData()
     }
-    // MARK: - UISearchBarDelegate
+// MARK: - UISearchBarDelegate
 
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             presenter.filterNews(searchText) // Обновляем данные при изменении текста
@@ -118,5 +115,4 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         let selectedNews = presenter.newsList[indexPath.item]
         print(selectedNews)
     }
-    
 }

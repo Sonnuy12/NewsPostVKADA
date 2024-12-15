@@ -10,6 +10,10 @@ import UIKit
 class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     static var reuseId: String = "FavouriteCustomCell"
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     lazy var FavouriteImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.contentMode = .scaleAspectFill
@@ -73,8 +77,6 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupItemsInContentViews()
-        
-      
     }
     
     private func setupItemsInContentViews() {
@@ -85,45 +87,40 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
         setupConstraints()
     }
     
-     func configureElements(items: NewsEntity) {
+    func configureElements(items: NewsEntity) {
         FavouriteImage.image = UIImage(named: items.imageURL)
-       datePublication.text = items.datePublicationPost?.description
-       mainLabel.text = items.title
+        datePublication.text = items.datePublicationPost?.description
+        mainLabel.text = items.title
         descriptionLabel.text = items.descriptionText
-       websiteLabel.text = items.website
+        websiteLabel.text = items.website
     }
     
-     func setupConstraints() {
-         NSLayoutConstraint.activate([
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
             
-             FavouriteImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-             FavouriteImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-             FavouriteImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-             FavouriteImage.heightAnchor.constraint(equalToConstant: 260),
-             
-             isFavourite.topAnchor.constraint(equalTo: FavouriteImage.topAnchor, constant: 20),
-             isFavourite.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -20),
-             
-             HstackSiteData.topAnchor.constraint(equalTo: FavouriteImage.bottomAnchor, constant: 10),
-             HstackSiteData.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor, constant: 15),
-             HstackSiteData.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -15),
-             HstackSiteData.heightAnchor.constraint(equalToConstant: 20),
-             
-             mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
-             mainLabel.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor),
-             mainLabel.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor),
-             
-             descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
-             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
-             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
-             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
-             
-             
-         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+            FavouriteImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+            FavouriteImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            FavouriteImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            FavouriteImage.heightAnchor.constraint(equalToConstant: 260),
+            
+            isFavourite.topAnchor.constraint(equalTo: FavouriteImage.topAnchor, constant: 20),
+            isFavourite.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -20),
+            
+            HstackSiteData.topAnchor.constraint(equalTo: FavouriteImage.bottomAnchor, constant: 10),
+            HstackSiteData.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor, constant: 15),
+            HstackSiteData.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -15),
+            HstackSiteData.heightAnchor.constraint(equalToConstant: 20),
+            
+            mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
+            mainLabel.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor),
+            mainLabel.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
+            descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
+            
+        ])
     }
 }
 

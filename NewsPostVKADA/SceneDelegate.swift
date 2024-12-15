@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: scene)
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateNewsView())
+        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateFavoritesStorageView())
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

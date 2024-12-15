@@ -45,16 +45,14 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol {
             view.addSubViews(FavouriteCollection,FavouriteLabel)
             view.backgroundColor = .white
             setupConstaints()
-            presenter.fetchSavedNews()
+            presenter.loadFavorites()
         }
    
         func displaySavedNews(_ news: [NewsEntity]) {
-            presenter.savedNews = news
+            presenter.favorites = news 
             FavouriteCollection.reloadData()
         }
     
-   
-        
         private func setupConstaints() {
             NSLayoutConstraint.activate([
                 FavouriteCollection.topAnchor.constraint(equalTo: FavouriteLabel.bottomAnchor, constant: 15),
@@ -74,19 +72,20 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol {
 // MARK: - extension для коллекции
 extension FavoritesStorageView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.savedNews.count
+        return presenter.favorites.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteCustomCell.reuseId, for: indexPath) as! FavouriteCustomCell
-        let savedNews = presenter.savedNews[indexPath.item]
+        let savedNews = presenter.favorites[indexPath.item]
         cell.configureElements(items: savedNews)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // MARK: - выбор элемента в коллекции, здесь может быть добавлен переход к выбранной новости или ее удаление
-        let selectedNews = presenter.savedNews[indexPath.item]
-        print(selectedNews)
+        //Добавил метод для удаления
+        let selectedNews = presenter.favorites[indexPath.item]
+        presenter.deleteFavoriteNews(selectedNews)
+        print("Новость удалена: \(selectedNews.title ?? "Без заголовка")")
     }
-    
 }

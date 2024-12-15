@@ -66,9 +66,17 @@ extension CoreDataManager {
         }
     }
     
+//    func deleteNews(_ news: NewsEntity) {
+//        context.delete(news)
+//        saveContext()
+//    }
     func deleteNews(_ news: NewsEntity) {
         context.delete(news)
-        saveContext()
+        do {
+            try context.save()
+        } catch {
+            print("Ошибка при удалении новости: \(error)")
+        }
     }
     
     // MARK: - FetchedResultsController

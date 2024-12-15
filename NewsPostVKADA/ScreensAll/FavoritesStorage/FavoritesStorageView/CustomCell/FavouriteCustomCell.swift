@@ -1,18 +1,16 @@
 //
-//  CustomNewsCell.swift
+//  FavouriteCustomCell.swift
 //  NewsPostVKADA
 //
-//  Created by Дима Люфт on 10.12.2024.
+//  Created by Дима Люфт on 14.12.2024.
 //
 
 import UIKit
 
-// MARK: - создание кастомной ячейки
-class CustomNewsCell: UICollectionViewCell, SetupNewCell {
+class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
+    static var reuseId: String = "FavouriteCustomCell"
     
-    static var reuseId: String = "CustomNewsCell"
-    
-    lazy var newsImage: UIImageView = {
+    lazy var FavouriteImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.contentMode = .scaleAspectFill
         $0.layer.cornerRadius = 20
@@ -82,31 +80,38 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     private func setupItemsInContentViews() {
         contentView.backgroundColor = .newLightGrey
         contentView.layer.cornerRadius = 20
-        contentView.addSubViews(newsImage,HstackSiteData,mainLabel,descriptionLabel)
-        newsImage.addSubview(isFavourite)
+        contentView.addSubViews(FavouriteImage,HstackSiteData,mainLabel,descriptionLabel)
+        FavouriteImage.addSubview(isFavourite)
         setupConstraints()
     }
     
+     func configureElements(items: NewsEntity) {
+        FavouriteImage.image = UIImage(named: items.imageURL)
+       datePublication.text = items.datePublicationPost?.description
+       mainLabel.text = items.title
+        descriptionLabel.text = items.descriptionText
+       websiteLabel.text = items.website
+    }
     
      func setupConstraints() {
          NSLayoutConstraint.activate([
             
-             newsImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-             newsImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-             newsImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-             newsImage.heightAnchor.constraint(equalToConstant: 260),
+             FavouriteImage.topAnchor.constraint(equalTo: contentView.topAnchor),
+             FavouriteImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+             FavouriteImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+             FavouriteImage.heightAnchor.constraint(equalToConstant: 260),
              
-             isFavourite.topAnchor.constraint(equalTo: newsImage.topAnchor, constant: 20),
-             isFavourite.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -20),
+             isFavourite.topAnchor.constraint(equalTo: FavouriteImage.topAnchor, constant: 20),
+             isFavourite.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -20),
              
-             HstackSiteData.topAnchor.constraint(equalTo: newsImage.bottomAnchor, constant: 10),
-             HstackSiteData.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor, constant: 15),
-             HstackSiteData.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -15),
+             HstackSiteData.topAnchor.constraint(equalTo: FavouriteImage.bottomAnchor, constant: 10),
+             HstackSiteData.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor, constant: 15),
+             HstackSiteData.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -15),
              HstackSiteData.heightAnchor.constraint(equalToConstant: 20),
              
              mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
-             mainLabel.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor),
-             mainLabel.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor),
+             mainLabel.leadingAnchor.constraint(equalTo: FavouriteImage.leadingAnchor),
+             mainLabel.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor),
              
              descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
              descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
@@ -121,3 +126,4 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+

@@ -46,11 +46,13 @@ class CoreDataManager: NSObject {
 
 extension CoreDataManager {
     // MARK: - News CRUD Operations
-    func addNews(title: String, descriptionText: String, imageURL: String) {
-        let news = NewsEntity(context: context)
-        news.title = title
-        news.descriptionText = descriptionText
-        news.imageURL = imageURL
+    func addNews(_ news: NewsEntity) {
+        let newEntity = NewsEntity(context: context)
+        newEntity.title = news.title
+        newEntity.descriptionText = news.descriptionText
+        newEntity.imageURL = news.imageURL
+        newEntity.datePublicationPost = news.datePublicationPost
+        newEntity.website = news.website
         saveContext()
     }
     

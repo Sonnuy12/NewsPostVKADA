@@ -101,7 +101,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
 // MARK: - extension для коллекции
 extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.numberOfItems() 
+        return presenter.numberOfItems()
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

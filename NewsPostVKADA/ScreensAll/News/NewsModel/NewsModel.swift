@@ -10,7 +10,7 @@ import Foundation
 protocol NewsModelProtocol {
     func fetchNews() -> [NewsEntity]
     
-    func addNews(title: String, description: String, imageURL: String)
+    func addNews(_ news: NewsEntity)
     
     func deleteNews(_ news: NewsEntity)
 }
@@ -22,8 +22,8 @@ class NewsModel: NewsModelProtocol {
         return coreDataManager.fetchNews()
     }
     
-    func addNews(title: String, description: String, imageURL: String) {
-        coreDataManager.addNews(title: title, descriptionText: description, imageURL: imageURL)
+    func addNews(_ news: NewsEntity){
+        coreDataManager.addNews(news)
     }
     
     func deleteNews(_ news: NewsEntity) {

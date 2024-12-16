@@ -8,6 +8,8 @@
 
 
 import UIKit
+import VKID
+import VKIDCore
 
 protocol AuthorizationViewProtocol: AnyObject {
     
@@ -15,6 +17,7 @@ protocol AuthorizationViewProtocol: AnyObject {
 
 class AuthorizationView: UIViewController, AuthorizationViewProtocol {
     // MARK: - Properties
+    var vkid: VKID!
     var presenter: AuthorizationPresenterProtocol?
     
     lazy var authorizationButton: UIButton = {
@@ -34,6 +37,8 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
         createBackround()
         view.addSubview(authorizationButton)
         setupButtonConstraints()
+        
+        createOneTap()
     }
     
     func createBackround() {
@@ -42,6 +47,36 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
         backgroundImageView.contentMode = .scaleAspectFill
         self.view.addSubview(backgroundImageView)
         self.view.sendSubviewToBack(backgroundImageView)
+    }
+    func createOneTap() {
+        // Создаем конфигурацию для кнопки One Tap
+        let oneTap = OneTapButton(
+            appearance: .init(
+                style: .primary(),
+                theme: .matchingColorScheme(.system)
+            ),
+            layout: .regular(
+                height: .large(.h56),
+                cornerRadius: 28
+            ),
+            presenter: .newUIWindow
+        ) { authResult in
+            // Обработка результата авторизации.
+            do {
+                let session = try authResult.get()
+                print("Auth succeeded with token: \(session.accessToken)")
+            } catch AuthError.cancelled {
+                print("Auth cancelled by user")
+            } catch {
+                print("Auth failed with error: \(error)")
+            }
+        }
+        
+        // Создаем кнопку One Tap и получаем UIView для неё
+        let oneTapView = vkid?.ui(for: oneTap).uiView()
+        // Настройка для добавления кнопки на экран
+        oneTapView?.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(oneTapView ?? authorizationButton)
     }
     
     private func setupButtonConstraints() {

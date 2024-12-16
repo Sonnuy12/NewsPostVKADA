@@ -6,13 +6,40 @@
 //
 
 import UIKit
+import VKID
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
+    //шаг второй 2
+    var vkid: VKID?
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        //Шаг первый 1
         // Override point for customization after application launch.
+        do {
+            self.vkid = try VKID(
+                config: Configuration(
+                    appCredentials: AppCredentials(
+                        clientId: "52851134",
+                        clientSecret: "eAVPARleqv1sg8o53F7S"
+                    ),
+                    loggingEnabled: false
+                )
+            )
+        } catch {
+            preconditionFailure("Failed to initialize VKID: \(error)")
+        }
         return true
+    }
+    //шаг второй 2
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        // Переадресация URL в VKID
+        return vkid?.open(url: url) ?? false
     }
 
     // MARK: UISceneSession Lifecycle

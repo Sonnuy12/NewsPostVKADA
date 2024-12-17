@@ -7,15 +7,18 @@
 
 import Foundation
 import UIKit
+import VKID
 
 class Builder {
     
-    static func CreateAuthorizationView() -> UIViewController {
-        let view = AuthorizationView()
-        let presenter = AuthorizationPresenter(view: view)
-        view.presenter = presenter
-        return view
-    }
+    static func CreateAuthorizationView(vkid: VKID) -> UIViewController {
+          let view = AuthorizationView()
+          let presenter = AuthorizationPresenter(view: view)
+          presenter.configureVKID(vkid: vkid) // Передаем VKID в Presenter
+          view.presenter = presenter
+          view.vkid = vkid
+          return view
+      }
     
     static func CreateNewsView() -> UIViewController {
         let view = NewsView()

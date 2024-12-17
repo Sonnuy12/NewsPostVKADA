@@ -6,17 +6,43 @@
 //
 
 import UIKit
+import VKID
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    var vkid: VKID!
+    
+    func scene(
+        _ scene: UIScene,
+        willConnectTo session: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         guard let scene = (scene as? UIWindowScene) else { return }
+
+        // Получаем vkid из AppDelegate
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            self.vkid = appDelegate.vkid
+        }
+
+        // Создаем экран авторизации через Builder
+        guard let vkid = self.vkid else {
+            print("VKID не инициализирован")
+            return
+        }
+       // let authorizationView = Builder.CreateAuthorizationView(vkid: vkid)
+
+        // Настройка окна
         self.window = UIWindow(windowScene: scene)
+        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateAuthorizationView(vkid: vkid))
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateAuthorizationView())
     }
+    //    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+//        guard let scene = (scene as? UIWindowScene) else { return }
+//        self.window = UIWindow(windowScene: scene)
+//        self.window?.makeKeyAndVisible()
+//        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateAuthorizationView())
+//    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.

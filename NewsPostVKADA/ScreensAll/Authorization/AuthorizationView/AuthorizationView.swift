@@ -12,7 +12,10 @@ import VKID
 import VKIDCore
 
 protocol AuthorizationViewProtocol: AnyObject {
-    
+    func setupOneTapButton(_ oneTapView: UIView)
+    func displayAuthSuccess(user: String, token: String)
+    func displayAuthError(message: String)
+    func displayAuthCancelled()
 }
 
 class AuthorizationView: UIViewController, AuthorizationViewProtocol {
@@ -20,25 +23,12 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
     var vkid: VKID!
     var presenter: AuthorizationPresenterProtocol?
     
-    lazy var authorizationButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Войти", for: .normal)
-        button.backgroundColor = UIColor.black
-        button.tintColor = UIColor.white
-        button.layer.cornerRadius = 20
-        button.addTarget(self, action: #selector(authorizationButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
     
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
         createBackround()
-        view.addSubview(authorizationButton)
-        setupButtonConstraints()
-        
-        createOneTap()
+        presenter?.setupOneTapButton()
     }
     
     func createBackround() {
@@ -48,48 +38,29 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
         self.view.addSubview(backgroundImageView)
         self.view.sendSubviewToBack(backgroundImageView)
     }
-    func createOneTap() {
-        // Создаем конфигурацию для кнопки One Tap
-        let oneTap = OneTapButton(
-            appearance: .init(
-                style: .primary(),
-                theme: .matchingColorScheme(.system)
-            ),
-            layout: .regular(
-                height: .large(.h56),
-                cornerRadius: 28
-            ),
-            presenter: .newUIWindow
-        ) { authResult in
-            // Обработка результата авторизации.
-            do {
-                let session = try authResult.get()
-                print("Auth succeeded with token: \(session.accessToken)")
-            } catch AuthError.cancelled {
-                print("Auth cancelled by user")
-            } catch {
-                print("Auth failed with error: \(error)")
-            }
-        }
-        
-        // Создаем кнопку One Tap и получаем UIView для неё
-        let oneTapView = vkid?.ui(for: oneTap).uiView()
-        // Настройка для добавления кнопки на экран
-        oneTapView?.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(oneTapView ?? authorizationButton)
-    }
     
-    private func setupButtonConstraints() {
-        authorizationButton.translatesAutoresizingMaskIntoConstraints = false
+    func setupOneTapButton(_ oneTapView: UIView) {
+        oneTapView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(oneTapView)
+        
         NSLayoutConstraint.activate([
-            authorizationButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            authorizationButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            authorizationButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            authorizationButton.heightAnchor.constraint(equalToConstant: 51)
+            oneTapView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            oneTapView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            oneTapView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            oneTapView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            oneTapView.heightAnchor.constraint(equalToConstant: 56),
         ])
     }
-    // метод действия для кнопки
-    @objc func authorizationButtonTapped() {
-        print("Кнопка авторизации нажата!")
+    
+    func displayAuthSuccess(user: String, token: String) {
+        print("Авторизация успешна! Token: \(token), User ID: \(user)")
+    }
+    
+    func displayAuthError(message: String) {
+        print("Ошибка авторизации: \(message)")
+    }
+    
+    func displayAuthCancelled() {
+        print("Авторизация отменена пользователем")
     }
 }

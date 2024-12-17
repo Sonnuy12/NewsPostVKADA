@@ -24,6 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             self.vkid = appDelegate.vkid
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(transition(nt: )), name: Notification.Name("setVC"), object: nil)
 
         // Создаем экран авторизации через Builder
         guard let vkid = self.vkid else {
@@ -34,9 +35,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Настройка окна
         self.window = UIWindow(windowScene: scene)
-        self.window?.rootViewController = UINavigationController(rootViewController: Builder.CreateAuthorizationView(vkid: vkid))
+        var sessions: [UserSession] = vkid.authorizedSessions
+        for result in sessions {
+            if sessions.contains(where: { $0.idToken == result.idToken }) {
+                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
+            } else {
+                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+                sessions.append(result)
+
+            }
+        }
         self.window?.makeKeyAndVisible()
     }
+    func setVC(_ vc: NotificationEnum) -> UIViewController {
+        switch vc {
+        case .authorization:
+            return  UINavigationController(rootViewController: Builder.CreateAuthorizationView(vkid: vkid))
+        case .tabBar:
+            return TabBarController()
+        }
+    }
+
+@objc func transition(nt: Notification) {
+    guard let userInfo = nt.userInfo, let vc = userInfo["vc"] as? NotificationEnum else { return }
+    self.window?.rootViewController = setVC(vc)
+}
     //    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 //        guard let scene = (scene as? UIWindowScene) else { return }
 //        self.window = UIWindow(windowScene: scene)

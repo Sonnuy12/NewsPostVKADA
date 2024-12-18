@@ -36,13 +36,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Настройка окна
         self.window = UIWindow(windowScene: scene)
         var sessions: [UserSession] = vkid.authorizedSessions
-        for result in sessions {
-            if sessions.contains(where: { $0.idToken == result.idToken }) {
-                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
-            } else {
-                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
-                sessions.append(result)
-
+        if !sessions.isEmpty {
+            for result in sessions {
+                if sessions.contains(where: { $0.idToken == result.idToken }) {
+                    print("ЭТО ТО ЧТО НУЖНО: \(session)")
+                    NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
+                    
+                } else {
+                    NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+                    sessions.append(result)
+                    
+                }
             }
         }
         self.window?.makeKeyAndVisible()

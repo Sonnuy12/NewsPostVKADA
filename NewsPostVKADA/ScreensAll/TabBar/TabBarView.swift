@@ -16,10 +16,10 @@ class TabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tabBar.backgroundColor = UIColor.green
+        tabBar.backgroundColor = UIColor.newLightGrey
         
-        tabBar.tintColor = UIColor.darkText
-        tabBar.unselectedItemTintColor = UIColor.darkGray
+        tabBar.tintColor = UIColor.black
+        tabBar.unselectedItemTintColor = UIColor.lightGray
         
         let news = UINavigationController(rootViewController: news)
         let errorNilVk = UINavigationController(rootViewController: errorNilVk)

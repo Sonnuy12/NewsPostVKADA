@@ -30,7 +30,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .red // в процессе появления коллекций с данными изменить цвет на белый
+        $0.backgroundColor = .green // в процессе появления коллекций с данными изменить цвет на белый
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
         return $0
@@ -161,8 +161,8 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }
     func showAlert() {
         let alertController = UIAlertController(
-            title: "Заголовок",
-            message: "Вы хотите выполнить действие?",
+            title: "Выйти",
+            message: "Вы действительно хотите выйти из аккаунта?",
             preferredStyle: .alert
         )
         
@@ -183,7 +183,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }
     
     
-//Функция для выхода из акка 
+//Функция для выхода из акка
     func out() {
         //здесь или в презенторе должна быть функция для выхода из акка, но он не работает, нужно преедавать переменные и тд
 //        sessions.logout { result in

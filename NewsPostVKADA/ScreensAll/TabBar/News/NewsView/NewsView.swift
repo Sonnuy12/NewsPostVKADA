@@ -12,7 +12,7 @@ protocol NewsViewProtocol: AnyObject {
     func updateNewsList(_ news: [NewsEntity])
     func reloadData()
     func showAlert()
-    func out()
+
 }
 
 class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
@@ -20,7 +20,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - Properties
     //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
     var presenter: NewsPresenterProtocol!
-    
+    var vkid: VKID!
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
@@ -169,6 +169,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         // Кнопка "ОК"
         let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
             self.presenter.logOut()
+            
         }
         
         // Кнопка "Отмена"
@@ -182,16 +183,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         present(alertController, animated: true, completion: nil)
     }
     
-    
-//Функция для выхода из акка
-    func out() {
-        //здесь или в презенторе должна быть функция для выхода из акка, но он не работает, нужно преедавать переменные и тд
-//        sessions.logout { result in
-//            print("Did logout from \(sessions) with \(result)")
-//        }
-        
-        print("Отпустите меня пожалуйста")
-    }
     
     @objc func actionButtonTapped() {
         print("Кнопка нажата")

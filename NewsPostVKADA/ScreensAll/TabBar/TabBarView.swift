@@ -7,12 +7,24 @@
 
 import Foundation
 import UIKit
+import VKID
 
 class TabBarController: UITabBarController {
     
-    private var news = Builder.CreateNewsView()
-    private var errorNilVk = Builder.CreateErrorNilVkView()
-    private var favoritesStorage = Builder.CreateFavoritesStorageView()
+    private var news: UIViewController
+    private var errorNilVk: UIViewController
+    private var favoritesStorage: UIViewController 
+    init(vkid: VKID) {
+        self.news = Builder.CreateNewsView(vkid: vkid)
+        self.errorNilVk = Builder.CreateErrorNilVkView()
+        self.favoritesStorage = Builder.CreateFavoritesStorageView()
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

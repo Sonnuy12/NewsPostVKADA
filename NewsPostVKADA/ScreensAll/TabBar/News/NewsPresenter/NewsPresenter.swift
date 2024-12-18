@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import VKID
 
 protocol NewsPresenterProtocol: AnyObject {
     func loadData()
@@ -18,13 +18,13 @@ protocol NewsPresenterProtocol: AnyObject {
     var imageUser: String {get set}
     func handleActionButtonTap()
     func logOut()
+    func configureVKID(vkid: VKID)
 }
-
 class NewsPresenter: NewsPresenterProtocol {
     
     var filteredNews: [NewsEntity] = []
     var newsList: [NewsEntity] = []
-    
+    var vkid: VKID!
     var nameUser = "Загруз Ожиданов"
     var imageUser: String = "BackroundAuthorization"
     
@@ -38,6 +38,11 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     // MARK: - Func
+    func configureVKID(vkid: VKID) {
+        self.vkid = vkid
+        print("VKID передан в презентер: \(String(describing: self.vkid))")
+    }
+    
     func loadData() {
         let news = model.fetchNews()
         view?.updateNewsList(news)
@@ -73,11 +78,42 @@ class NewsPresenter: NewsPresenterProtocol {
     
     func handleActionButtonTap() {
         print("алерт  але алерталерталерталерталерталерталерталертрт")
-           view?.showAlert()  // Даем команду представлению показать алерт
-       }
+        view?.showAlert()  // Даем команду представлению показать алерт
+    }
     
     func logOut() {
-        view?.out() 
+        guard let vkid = vkid else {
+            print("VKID не инициализирован")
+            return
+        }
+        
+        // Используем вашу функцию logout
+        logout(vkid: vkid) { result in
+            switch result {
+            case .success:
+                print("Выход успешно выполнен через презентер")
+                // Отправляем уведомление об успешном выходе
+                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+            case .failure(let error):
+                print("Ошибка при выходе через презентер: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // Ваша функция logout остается без изменений
+    private func logout(vkid: VKID, completion: @escaping (Result<Void, Error>) -> Void) {
+        let session: UserSession? = vkid.currentAuthorizedSession
+        session?.logout { result in
+            switch result {
+            case .success:
+                print("Выход выполнен успешно")
+                completion(.success(()))
+            case .failure(let error):
+                print("Ошибка при выходе: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }
     }
     
 }
+

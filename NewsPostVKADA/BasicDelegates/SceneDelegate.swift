@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
+        
         // Получаем vkid из AppDelegate
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             self.vkid = appDelegate.vkid
@@ -41,6 +42,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if sessions.contains(where: { $0.idToken == result.idToken }) {
                     print("ЭТО ТО ЧТО НУЖНО: \(session)")
                     NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
+                    
                 } else {
                     sessions.append(result)
                 }
@@ -48,6 +50,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
         }
+        
         
         self.window?.makeKeyAndVisible()
     }
@@ -57,7 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case .authorization:
             return  UINavigationController(rootViewController: Builder.CreateAuthorizationView(vkid: vkid))
         case .tabBar:
-            return TabBarController()
+            return TabBarController(vkid: vkid)
         }
     }
     

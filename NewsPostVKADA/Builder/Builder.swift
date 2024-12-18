@@ -20,10 +20,11 @@ class Builder {
           return view
       }
     
-    static func CreateNewsView() -> UIViewController {
+    static func CreateNewsView(vkid: VKID) -> UIViewController {
         let view = NewsView()
         let model = NewsModel()
         let presenter = NewsPresenter(view: view, model: model)
+        presenter.configureVKID(vkid: vkid)
         view.presenter = presenter
         return view
     }

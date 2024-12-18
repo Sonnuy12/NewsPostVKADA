@@ -51,6 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         self.window?.makeKeyAndVisible()
     }
+
     func setVC(_ vc: NotificationEnum) -> UIViewController {
         switch vc {
         case .authorization:

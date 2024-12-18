@@ -6,16 +6,21 @@
 //
 
 import UIKit
+import VKID
 
 protocol NewsViewProtocol: AnyObject {
     func updateNewsList(_ news: [NewsEntity])
     func reloadData()
     func showAlert()
+    func out()
 }
 
 class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     
     // MARK: - Properties
+    //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
+    var presenter: NewsPresenterProtocol!
+    
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
@@ -25,23 +30,11 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .darkGray // в процессе появления коллекций с данными изменить цвет на белый
+        $0.backgroundColor = .red // в процессе появления коллекций с данными изменить цвет на белый
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
-    
-    //    lazy var searchControll: UISearchController = {
-    //        $0.searchBar.delegate = self
-    //        $0.obscuresBackgroundDuringPresentation = false
-    //        $0.searchBar.placeholder = "Search"
-    //        $0.searchBar.searchTextField.backgroundColor = .systemGray6
-    //        $0.searchBar.searchTextField.leftView?.tintColor = .gray
-    //        $0.searchBar.searchTextField.rightView?.tintColor = .gray
-    //        navigationItem.searchController = $0
-    //        definesPresentationContext = true
-    //        return $0
-    //    }(UISearchController(searchResultsController: nil))
     
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -51,22 +44,34 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         searchBar.searchTextField.backgroundColor = .systemGray6
         searchBar.searchTextField.leftView?.tintColor = .gray
         searchBar.searchTextField.rightView?.tintColor = .gray
+        
+        searchBar.backgroundColor = .newLightGrey
+        // searchBar.searchTextField.clipsToBounds = true
+        searchBar.searchBarStyle = .minimal
+        // searchBar.showsCancelButton = true
+        //searchBar.backgroundImage = UIImage()
+        
         return searchBar
     }()
     
-    lazy var NewsLabel: UILabel = {
+    
+    lazy var newsLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = "Новости"
+        $0.text = "  Новости"
+        $0.textAlignment = .left
         $0.textColor = .black
+        //$0.backgroundColor = .red
         $0.font = .systemFont(ofSize: 34, weight: .bold)
         $0.numberOfLines = 0
+        $0.backgroundColor = .red
         return $0
     }(UILabel())
     
-    lazy var headerView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
+    private func setupNavigationBar() {
         
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        //1)фотка
         let profileImageView = UIImageView()
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.layer.cornerRadius = 17.5
@@ -74,83 +79,79 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         profileImageView.image = UIImage(named: presenter.imageUser)
         profileImageView.backgroundColor = .systemGray5
         profileImageView.contentMode = .scaleAspectFill
-        
+        //2)имя
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.text = presenter.nameUser
         nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
         nameLabel.textColor = .black
         
+        //3)добавляемя фотку и имя в контейнер
+        containerView.addSubview(profileImageView)
+        containerView.addSubview(nameLabel)
+        //4)настраиваем положнеи фотки и имени
+        NSLayoutConstraint.activate([
+            // Картинка слева
+            profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -30),
+            profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            profileImageView.widthAnchor.constraint(equalToConstant: 35),
+            profileImageView.heightAnchor.constraint(equalToConstant: 35),
+            // Лейбл справа от картинки
+            nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8),
+            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            
+        ])
+        //5)устанавливаем контейнер с фоткой и именем в navigationItem.titleView
+        containerView.backgroundColor = .red
+        self.navigationItem.titleView = containerView
+        
+        //6)создаем кнопочку
         let actionButton = UIButton(type: .system)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
         actionButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-        actionButton.tintColor = UIColor.black
-        //actionButton.setTitleColor(.systemBlue, for: .normal)
-        //actionButton.frame.size = CGSize(width: 20.0, height: 6.0)
-       // actionButton.backgroundColor = .red
+        actionButton.tintColor = .black
         actionButton.imageView?.contentMode = .scaleAspectFill
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
-    
-        view.addSubview(profileImageView)
-        view.addSubview(nameLabel)
-        view.addSubview(actionButton)
-        
-        
-        NSLayoutConstraint.activate([
-            profileImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: 35),
-            profileImageView.heightAnchor.constraint(equalToConstant: 35),
-            
-            nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 16),
-            nameLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            actionButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            actionButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            actionButton.heightAnchor.constraint(equalToConstant: 10),
-            actionButton.widthAnchor.constraint(equalToConstant: 24)
-            
-        ])
-        
-        return view
-    }()
-    //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
-    var presenter: NewsPresenterProtocol!
+        //7)лепим кнопочку вправо
+        let rightBarButton = UIBarButtonItem(customView: actionButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
     
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubViews(headerView, searchBar, newsCollection,NewsLabel)
-        view.backgroundColor = .white
+        //        navigationController?.navigationBar.barTintColor = UIColor.red
+        //        navigationController?.navigationItem.titleView?.backgroundColor = .blue
+        view.addSubViews(searchBar, newsCollection, newsLabel)
+        view.backgroundColor = .newLightGrey
         presenter?.loadData()
+        setupNavigationBar()
         setupConstaints()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
     }
     private func setupConstaints() {
         NSLayoutConstraint.activate([
-            // HeaderView
-            headerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            headerView.heightAnchor.constraint(equalToConstant: 100),
-            
-            // SearchBar
-            searchBar.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 10),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            //SearchBar
+            searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
             searchBar.heightAnchor.constraint(equalToConstant: 40),
             
-            // Лейбл "Новости"
-            NewsLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
-            NewsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            NewsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            NewsLabel.heightAnchor.constraint(equalToConstant: 40),
+            //Лейбл "Новости"
+            newsLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            //            newsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            //            newsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            newsLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
+            newsLabel.heightAnchor.constraint(equalToConstant: 70),
             
-            // Коллекция
-            newsCollection.topAnchor.constraint(equalTo: NewsLabel.bottomAnchor, constant: 15),
+            //Коллекция
+            newsCollection.topAnchor.constraint(equalTo: newsLabel.bottomAnchor),
             newsCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             newsCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             newsCollection.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
         ])
     }
     
@@ -159,7 +160,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         newsCollection.reloadData()
     }
     func showAlert() {
-        
         let alertController = UIAlertController(
             title: "Заголовок",
             message: "Вы хотите выполнить действие?",
@@ -168,19 +168,29 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         
         // Кнопка "ОК"
         let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
-            print("ОК нажата")
+            self.presenter.logOut()
         }
         
         // Кнопка "Отмена"
         let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
             print("Отмена нажата")
         }
-        alertController.addAction(cancelAction)
         alertController.addAction(okAction)
-        
+        alertController.addAction(cancelAction)
         
         // Показать алерт
         present(alertController, animated: true, completion: nil)
+    }
+    
+    
+//Функция для выхода из акка 
+    func out() {
+        //здесь или в презенторе должна быть функция для выхода из акка, но он не работает, нужно преедавать переменные и тд
+//        sessions.logout { result in
+//            print("Did logout from \(sessions) with \(result)")
+//        }
+        
+        print("Отпустите меня пожалуйста")
     }
     
     @objc func actionButtonTapped() {

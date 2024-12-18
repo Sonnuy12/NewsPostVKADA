@@ -17,6 +17,7 @@ protocol NewsPresenterProtocol: AnyObject {
     var nameUser: String {get set}
     var imageUser: String {get set}
     func handleActionButtonTap()
+    func logOut()
 }
 
 class NewsPresenter: NewsPresenterProtocol {
@@ -74,4 +75,9 @@ class NewsPresenter: NewsPresenterProtocol {
         print("алерт  але алерталерталерталерталерталерталерталертрт")
            view?.showAlert()  // Даем команду представлению показать алерт
        }
+    
+    func logOut() {
+        view?.out() 
+    }
+    
 }

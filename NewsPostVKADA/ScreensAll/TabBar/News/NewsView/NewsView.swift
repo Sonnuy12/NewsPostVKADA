@@ -91,6 +91,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             // Отображение имени пользователя
             let fullUserName = "\(user.firstName ?? "Unknown") \(user.lastName ?? "Unknown")"
             nameLabel.text = fullUserName
+            nameLabel.layoutIfNeeded()
 
             // Отображение аватара пользователя
             if let avatarURLString = user.avatar, let avatarURL = URL(string: avatarURLString) {
@@ -102,6 +103,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
                     }
                     DispatchQueue.main.async {
                         profileImageView.image = UIImage(data: data)
+                        profileImageView.layoutIfNeeded()
                     }
                     //profileImageView.image = UIImage(data: data)
                 }.resume()
@@ -168,8 +170,34 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         //7)лепим кнопочку вправо
         let rightBarButton = UIBarButtonItem(customView: actionButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
+        
+        func updateUserProfile() {
+            let userDetails = CoreDataManager.shared.fetchUserDetails()
+            
+            if let user = userDetails.first {
+                let fullUserName = "\(user.firstName ?? "Unknown") \(user.lastName ?? "Unknown")"
+                nameLabel.text = fullUserName
+
+                if let avatarURLString = user.avatar, let avatarURL = URL(string: avatarURLString) {
+                    URLSession.shared.dataTask(with: avatarURL) { data, response, error in
+                        guard let data = data, error == nil else { return }
+                        DispatchQueue.main.async {
+                            
+                            profileImageView.image = UIImage(data: data)
+                        }
+                    }.resume()
+                    
+                } else {
+                    profileImageView.image = UIImage(systemName: "person.circle")
+                }
+            } else {
+                nameLabel.text = "Гость"
+                profileImageView.image = UIImage(systemName: "person.circle")
+            }
+        }
     }
     
+   
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -182,6 +210,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupNavigationBar()
         
     }
     private func setupConstaints() {

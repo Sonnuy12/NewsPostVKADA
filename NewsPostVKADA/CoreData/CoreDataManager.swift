@@ -55,7 +55,25 @@ extension CoreDataManager {
         newEntity.website = news.website
         saveContext()
     }
-
+    func fetchNews() -> [NewsEntity] {
+        let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()
+        do {
+            return try context.fetch(fetchRequest)
+        } catch {
+            print("Error fetching news: \(error)")
+            return []
+        }
+    }
+    
+    func deleteNews(_ news: NewsEntity) {
+        context.delete(news)
+        do {
+            try context.save()
+        } catch {
+            print("Ошибка при удалении новости: \(error)")
+        }
+    }
+    // MARK: - User CRUD Operations
     func addUserData(firstName: String, lastName: String, avatarURL: String?) {
         let newUserEntity = NewsEntity(context: context)
         newUserEntity.userFirstName = firstName
@@ -83,25 +101,21 @@ extension CoreDataManager {
         }
     }
     
-    func fetchNews() -> [NewsEntity] {
+    func deleteUserDetails() {
         let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "userFirstName != nil OR userLastName != nil OR userAvatar != nil")
+
         do {
-            return try context.fetch(fetchRequest)
-        } catch {
-            print("Error fetching news: \(error)")
-            return []
-        }
-    }
-    
-    func deleteNews(_ news: NewsEntity) {
-        context.delete(news)
-        do {
+            let results = try context.fetch(fetchRequest)
+            for object in results {
+                context.delete(object)
+            }
             try context.save()
+            print("Данные пользователя успешно удалены")
         } catch {
-            print("Ошибка при удалении новости: \(error)")
+            print("Ошибка при удалении данных пользователя: \(error)")
         }
     }
-    
     // MARK: - FetchedResultsController
     func setupNewsFetchedResultsController(delegate: NSFetchedResultsControllerDelegate) {
         let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()

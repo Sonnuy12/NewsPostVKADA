@@ -101,12 +101,15 @@ class NewsPresenter: NewsPresenterProtocol {
             switch result {
             case .success:
                 print("Выход успешно выполнен через презентер")
+                CoreDataManager.shared.deleteUserDetails()
                 // Отправляем уведомление об успешном выходе
                 NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
             case .failure(let error):
                 print("Ошибка при выходе через презентер: \(error.localizedDescription)")
             }
         }
+        
+    
     }
     
     // Ваша функция logout остается без изменений

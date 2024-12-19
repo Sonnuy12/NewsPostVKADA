@@ -83,31 +83,61 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
         nameLabel.textColor = .black
-
-        //получение данных из UserDefaults
-        let userDefaults = UserDefaults.standard
-          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
-             let imageURL = URL(string: imageURLString) {
-              // Загрузка изображения асинхронно
-              URLSession.shared.dataTask(with: imageURL) { data, response, error in
-                  guard let data = data, error == nil else {
-                      print("Ошибка загрузки изображения: \(String(describing: error))")
-                      return
-                  }
-                  DispatchQueue.main.async {
-                      profileImageView.image = UIImage(data: data)
-                  }
-              }.resume()
-          } else {
-              profileImageView.image = UIImage(systemName: "Person")
-          }
-
-        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
-            let fullUserName = userName + " " + userLastName
+        
+        
+        let userDetails = CoreDataManager.shared.fetchUserDetails()
+       
+        if let user = userDetails.first {
+            // Отображение имени пользователя
+            let fullUserName = "\(user.firstName ?? "Unknown") \(user.lastName ?? "Unknown")"
             nameLabel.text = fullUserName
-          } else {
-              nameLabel.text = "Гость" // Имя по умолчанию
-          }
+
+            // Отображение аватара пользователя
+            if let avatarURLString = user.avatar, let avatarURL = URL(string: avatarURLString) {
+                // Загрузка изображения асинхронно
+                URLSession.shared.dataTask(with: avatarURL) { data, response, error in
+                    guard let data = data, error == nil else {
+                        print("Ошибка загрузки изображения: \(String(describing: error))")
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        profileImageView.image = UIImage(data: data)
+                    }
+                    //profileImageView.image = UIImage(data: data)
+                }.resume()
+            } else {
+                profileImageView.image = UIImage(systemName: "person.circle") // Изображение по умолчанию
+            }
+        } else {
+            // Действия по умолчанию, если данных в Core Data нет
+            nameLabel.text = "Гость"
+            profileImageView.image = UIImage(systemName: "person.circle")
+        }
+       //выбрал более оптимальный способ через базу данных 
+//        //получение данных из UserDefaults
+//        let userDefaults = UserDefaults.standard
+//          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
+//             let imageURL = URL(string: imageURLString) {
+//              // Загрузка изображения асинхронно
+//              URLSession.shared.dataTask(with: imageURL) { data, response, error in
+//                  guard let data = data, error == nil else {
+//                      print("Ошибка загрузки изображения: \(String(describing: error))")
+//                      return
+//                  }
+//                  DispatchQueue.main.async {
+//                      profileImageView.image = UIImage(data: data)
+//                  }
+//              }.resume()
+//          } else {
+//              profileImageView.image = UIImage(systemName: "Person")
+//          }
+//
+//        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
+//            let fullUserName = userName + " " + userLastName
+//            nameLabel.text = fullUserName
+//          } else {
+//              nameLabel.text = "Гость" // Имя по умолчанию
+//          }
         
         //3)добавляемя фотку и имя в контейнер
         containerView.addSubview(profileImageView)

@@ -55,15 +55,33 @@ extension CoreDataManager {
         newEntity.website = news.website
         saveContext()
     }
-//    func addUserData(_ news: NewsEntity) {
-//        let newEntity = NewsEntity(context: context)
-//        newEntity.title = news.title
-//        newEntity.descriptionText = news.descriptionText
-//        newEntity.imageURL = news.imageURL
-//        newEntity.datePublicationPost = news.datePublicationPost
-//        newEntity.website = news.website
-//        saveContext()
-//    }
+
+    func addUserData(firstName: String, lastName: String, avatarURL: String?) {
+        let newUserEntity = NewsEntity(context: context)
+        newUserEntity.userFirstName = firstName
+        newUserEntity.userLastName = lastName
+        newUserEntity.userAvatar = avatarURL
+        saveContext()
+    }
+    
+    func fetchUserDetails() -> [(firstName: String?, lastName: String?, avatar: String?)] {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "NewsEntity")
+        fetchRequest.resultType = .dictionaryResultType
+        fetchRequest.propertiesToFetch = ["userFirstName", "userLastName", "userAvatar"]
+
+        do {
+            let results = try context.fetch(fetchRequest) as? [[String: Any]]
+            return results?.compactMap {
+                let firstName = $0["userFirstName"] as? String
+                let lastName = $0["userLastName"] as? String
+                let avatar = $0["userAvatar"] as? String
+                return (firstName, lastName, avatar)
+            } ?? []
+        } catch {
+            print("Error fetching user details: \(error)")
+            return []
+        }
+    }
     
     func fetchNews() -> [NewsEntity] {
         let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()

@@ -2,7 +2,7 @@
 //  NewsEntity+CoreDataClass.swift
 //  NewsPostVKADA
 //
-//  Created by сонный on 11.12.2024.
+//  Created by сонный on 19.12.2024.
 //
 //
 
@@ -13,7 +13,6 @@ import CoreData
 public class NewsEntity: NSManagedObject {
 
 }
-
 extension NewsEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<NewsEntity> {
@@ -27,9 +26,13 @@ extension NewsEntity {
     @NSManaged public var isFavourite: Bool
     @NSManaged public var title: String?
     @NSManaged public var website: String?
+    @NSManaged public var userFirstName: String?
+    @NSManaged public var userLastName: String?
+    @NSManaged public var userAvatar: String?
 
 }
 
 extension NewsEntity : Identifiable {
 
 }
+

@@ -53,22 +53,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     print("ТОТ САМЫЙ ТОКЕН : \(String(describing: token)) ВСЁ")
                     vkid.currentAuthorizedSession?.fetchUser { result in
                         do {
-                            let user = try result.get()
-                            let userDefaults = UserDefaults.standard
-                            
-                            // Сохраняем данные пользователя в UserDefaults
-                            
-                            userDefaults.set(user.firstName, forKey: "UserFirstName")
-                            userDefaults.set(user.lastName, forKey: "UserLastName")
-                            userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
-                            
-                            userDefaults.synchronize()
-                            
-                            print("Сохранено в UserDefaults: \(user.firstName) \(user.lastName), \(String(describing: user.avatarURL))")
-                            
-                        } catch {
-                            print("Failed to fetch user info: \(error.localizedDescription)")
-                        }
+                               let user = try result.get()
+                               CoreDataManager.shared.addUserData(
+                                firstName: user.firstName ?? "nil",
+                                   lastName: user.lastName ?? "nil", 
+                                   avatarURL: user.avatarURL?.absoluteString
+                               )
+                               
+                               let userDefaults = UserDefaults.standard
+                               userDefaults.set(user.firstName, forKey: "UserFirstName")
+                               userDefaults.set(user.lastName, forKey: "UserLastName")
+                               userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
+                               userDefaults.synchronize()
+                               
+                               print("Сохранено в Core Data и UserDefaults: \(user.firstName) \(user.lastName), \(String(describing: user.avatarURL))")
+                           } catch {
+                               print("Failed to fetch user info: \(error.localizedDescription)")
+                           }
                     }
                 }
             }

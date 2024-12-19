@@ -55,6 +55,15 @@ extension CoreDataManager {
         newEntity.website = news.website
         saveContext()
     }
+//    func addUserData(_ news: NewsEntity) {
+//        let newEntity = NewsEntity(context: context)
+//        newEntity.title = news.title
+//        newEntity.descriptionText = news.descriptionText
+//        newEntity.imageURL = news.imageURL
+//        newEntity.datePublicationPost = news.datePublicationPost
+//        newEntity.website = news.website
+//        saveContext()
+//    }
     
     func fetchNews() -> [NewsEntity] {
         let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()
@@ -66,10 +75,6 @@ extension CoreDataManager {
         }
     }
     
-//    func deleteNews(_ news: NewsEntity) {
-//        context.delete(news)
-//        saveContext()
-//    }
     func deleteNews(_ news: NewsEntity) {
         context.delete(news)
         do {

@@ -15,20 +15,28 @@ protocol NewsPresenterProtocol: AnyObject {
     func numberOfItems() -> Int
     
     var nameUser: String {get set}
-    var imageUser: String {get set}
+    
     func handleActionButtonTap()
     func logOut()
     func configureVKID(vkid: VKID)
+    
+    
 }
 class NewsPresenter: NewsPresenterProtocol {
+    
+    
+    // MARK: - Properties
+    var scene: SceneDelegate?
+    
     
     var filteredNews: [NewsEntity] = []
     var newsList: [NewsEntity] = []
     var vkid: VKID!
-    var nameUser = "Загруз Ожиданов"
-    var imageUser: String = "BackroundAuthorization"
     
-    // MARK: - Properties
+    
+    var nameUser: String = "пустота"
+    
+    
     weak var view: NewsViewProtocol?
     private var model: NewsModelProtocol
     
@@ -38,6 +46,7 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     // MARK: - Func
+    
     func configureVKID(vkid: VKID) {
         self.vkid = vkid
         print("VKID передан в презентер: \(String(describing: self.vkid))")
@@ -107,6 +116,15 @@ class NewsPresenter: NewsPresenterProtocol {
             switch result {
             case .success:
                 print("Выход выполнен успешно")
+                // Очистка данных из UserDefaults
+                let userDefaults = UserDefaults.standard
+                userDefaults.removeObject(forKey: "UserFirstName")
+                userDefaults.removeObject(forKey: "UserLastName")
+                userDefaults.removeObject(forKey: "UserAvatarURL")
+                
+                // Синхронизируем изменения
+                userDefaults.synchronize()
+                print("Данные пользователя удалены из UserDefaults")
                 completion(.success(()))
             case .failure(let error):
                 print("Ошибка при выходе: \(error.localizedDescription)")
@@ -114,6 +132,5 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
     }
-    
 }
 

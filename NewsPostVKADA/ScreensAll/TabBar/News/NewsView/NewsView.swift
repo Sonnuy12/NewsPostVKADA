@@ -76,15 +76,38 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
         profileImageView.layer.cornerRadius = 17.5
         profileImageView.clipsToBounds = true
-        profileImageView.image = UIImage(named: presenter.imageUser)
         profileImageView.backgroundColor = .systemGray5
         profileImageView.contentMode = .scaleAspectFill
         //2)имя
         let nameLabel = UILabel()
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.text = presenter.nameUser
         nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
         nameLabel.textColor = .black
+
+        //получение данных из UserDefaults
+        let userDefaults = UserDefaults.standard
+          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
+             let imageURL = URL(string: imageURLString) {
+              // Загрузка изображения асинхронно
+              URLSession.shared.dataTask(with: imageURL) { data, response, error in
+                  guard let data = data, error == nil else {
+                      print("Ошибка загрузки изображения: \(String(describing: error))")
+                      return
+                  }
+                  DispatchQueue.main.async {
+                      profileImageView.image = UIImage(data: data)
+                  }
+              }.resume()
+          } else {
+              profileImageView.image = UIImage(systemName: "Person")
+          }
+
+        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
+            let fullUserName = userName + " " + userLastName
+            nameLabel.text = fullUserName
+          } else {
+              nameLabel.text = "Гость" // Имя по умолчанию
+          }
         
         //3)добавляемя фотку и имя в контейнер
         containerView.addSubview(profileImageView)
@@ -120,10 +143,9 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        navigationController?.navigationBar.barTintColor = UIColor.red
-        //        navigationController?.navigationItem.titleView?.backgroundColor = .blue
         view.addSubViews(searchBar, newsCollection, newsLabel)
         view.backgroundColor = .newLightGrey
+        
         presenter?.loadData()
         setupNavigationBar()
         setupConstaints()
@@ -142,8 +164,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             
             //Лейбл "Новости"
             newsLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-            //            newsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            //            newsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             newsLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
             newsLabel.heightAnchor.constraint(equalToConstant: 70),
             

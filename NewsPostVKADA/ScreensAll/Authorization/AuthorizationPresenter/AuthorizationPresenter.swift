@@ -53,7 +53,7 @@ class AuthorizationPresenter: AuthorizationPresenterProtocol {
     private func handleAuthResult(_ authResult: Result<UserSession, AuthError>) {
         switch authResult {
         case .success(let session):
-            print("Авторизация успешна! Token: \(session.accessToken), User ID: \(String(describing: session.user))")
+            print("Авторизация успешна! Token: \(session.accessToken), User ID: \(String(describing: session.idToken))")
             NotificationCenter.default.post(name: Notification.Name(rawValue: "setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
         case .failure(AuthError.cancelled):
             print("Авторизация отменена пользователем")

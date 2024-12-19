@@ -13,14 +13,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var vkid: VKID!
     
+    var userFirstName: String?
+    var userLastName: String?
+    var userAvatarImage: URL?
+    
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        
-        
         // Получаем vkid из AppDelegate
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             self.vkid = appDelegate.vkid
@@ -37,18 +39,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Настройка окна
         self.window = UIWindow(windowScene: scene)
         var sessions: [UserSession] = vkid.authorizedSessions
+        let sessions1: UserSession? = vkid.currentAuthorizedSession
+        
+        var token = vkid.currentAuthorizedSession?.accessToken.userId
+        
         if !sessions.isEmpty {
             for result in sessions {
                 if sessions.contains(where: { $0.idToken == result.idToken }) {
                     print("ЭТО ТО ЧТО НУЖНО: \(session)")
                     NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
-                    
-                } else {
-                    sessions.append(result)
+                    print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии")
+                    print("ТОТ САМЫЙ SESSIONS: \(sessions1) дададададад")
+                    print("ТОТ САМЫЙ ТОКЕН : \(String(describing: token)) ВСЁ")
+                    vkid.currentAuthorizedSession?.fetchUser { result in
+                        do {
+                            let user = try result.get()
+                            let userDefaults = UserDefaults.standard
+                            
+                            // Сохраняем данные пользователя в UserDefaults
+                            
+                            userDefaults.set(user.firstName, forKey: "UserFirstName")
+                            userDefaults.set(user.lastName, forKey: "UserLastName")
+                            userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
+                            
+                            userDefaults.synchronize()
+                            
+                            print("Сохранено в UserDefaults: \(user.firstName) \(user.lastName), \(String(describing: user.avatarURL))")
+                            
+                        } catch {
+                            print("Failed to fetch user info: \(error.localizedDescription)")
+                        }
+                    }
                 }
             }
-        } else {
+        }else {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+            print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии2.0")
         }
         
         

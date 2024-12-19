@@ -54,6 +54,8 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
     
     func displayAuthSuccess(user: String, token: String) {
         print("Авторизация успешна! Token: \(token), User ID: \(user)")
+       // print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии")
+        print("ТОТ САМЫЙ ТОКЕН : \(token) ВСЁ")
     }
     
     func displayAuthError(message: String) {

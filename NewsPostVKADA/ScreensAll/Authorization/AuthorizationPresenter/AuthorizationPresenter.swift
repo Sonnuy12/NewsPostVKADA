@@ -44,12 +44,12 @@ class AuthorizationPresenter: AuthorizationPresenterProtocol {
             presenter: .newUIWindow
         ) { [weak self] authResult in
             self?.handleAuthResult(authResult)
+            
         }
         // Создаем UI элемент кнопки
         let oneTapView = vkid.ui(for: oneTap).uiView()
         view?.setupOneTapButton(oneTapView)
     }
-    
     private func handleAuthResult(_ authResult: Result<UserSession, AuthError>) {
         switch authResult {
         case .success(let session):

@@ -147,7 +147,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         //4)настраиваем положнеи фотки и имени
         NSLayoutConstraint.activate([
             // Картинка слева
-            profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: -30),
+            profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             profileImageView.widthAnchor.constraint(equalToConstant: 35),
             profileImageView.heightAnchor.constraint(equalToConstant: 35),
@@ -158,7 +158,8 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         ])
         //5)устанавливаем контейнер с фоткой и именем в navigationItem.titleView
         containerView.backgroundColor = .red
-        self.navigationItem.titleView = containerView
+        let barButtonItem = UIBarButtonItem(customView: containerView)
+        self.navigationItem.leftBarButtonItem = barButtonItem
         
         //6)создаем кнопочку
         let actionButton = UIButton(type: .system)

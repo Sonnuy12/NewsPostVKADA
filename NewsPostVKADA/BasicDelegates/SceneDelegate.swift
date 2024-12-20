@@ -41,7 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var sessions: [UserSession] = vkid.authorizedSessions
         let sessions1: UserSession? = vkid.currentAuthorizedSession
         
-        var token = vkid.currentAuthorizedSession?.accessToken.userId
+        var token = vkid.currentAuthorizedSession?.accessToken
         
         if !sessions.isEmpty {
             for result in sessions {
@@ -58,6 +58,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 firstName: user.firstName ?? "nil",
                                    lastName: user.lastName ?? "nil", 
                                    avatarURL: user.avatarURL?.absoluteString
+                                
                                )
                                
                                let userDefaults = UserDefaults.standard
@@ -67,6 +68,47 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                userDefaults.synchronize()
                                
                                print("Сохранено в Core Data и UserDefaults: \(user.firstName) \(user.lastName), \(String(describing: user.avatarURL))")
+                            //получаем токен для работы с VK API
+                            print("Токен: \(String(describing: token))")
+                            if let token = vkid.currentAuthorizedSession?.accessToken.value {  // Извлекаем строковое значение токена
+                                // Формируем параметры для запроса
+                                let parameters = [
+                                    "filters": "post",
+                                    "count": "10",
+                                    "scope": "news,offline"  // Добавляем scope с нужными правами доступа
+                                ]
+                                
+                                // Функция для создания URL
+                                func createVKAPIRequestURL(token: String, method: String, parameters: [String: String]) -> URL? {
+                                    var urlComponents = URLComponents()
+                                    urlComponents.scheme = "https"
+                                    urlComponents.host = "api.vk.com"
+                                    urlComponents.path = "/method/\(method)"
+                                    
+                                    // Базовые параметры, которые всегда нужны
+                                    var queryItems = [
+                                        URLQueryItem(name: "access_token", value: token),
+                                        URLQueryItem(name: "v", value: "5.131") // Указываем версию API
+                                    ]
+                                    
+                                    // Добавляем переданные параметры
+                                    parameters.forEach { key, value in
+                                        queryItems.append(URLQueryItem(name: key, value: value))
+                                    }
+                                    
+                                    urlComponents.queryItems = queryItems
+                                    return urlComponents.url
+                                }
+                                
+                                // Создаем URL для запроса
+                                if let requestURL = createVKAPIRequestURL(token: token, method: "newsfeed.get", parameters: parameters) {
+                                    print("Сформированная ссылка: \(requestURL)")
+                                } else {
+                                    print("Не удалось сформировать ссылку.")
+                                }
+                            } else {
+                                print("Токен отсутствует.")
+                            }
                            } catch {
                                print("Failed to fetch user info: \(error.localizedDescription)")
                            }

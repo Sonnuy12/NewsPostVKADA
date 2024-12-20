@@ -21,8 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.vkid = try VKID(
                 config: Configuration(
                     appCredentials: AppCredentials(
-                        clientId: "52851134",
-                        clientSecret: "eAVPARleqv1sg8o53F7S"
+//                        clientId: "52851134",
+//                        clientSecret: "eAVPARleqv1sg8o53F7S"
+                        clientId: "51811212",
+                        clientSecret: "60LMIFTbSJonBwPhSnCT"
                     ),
                     loggingEnabled: false
                 )

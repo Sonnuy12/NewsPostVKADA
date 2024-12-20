@@ -20,6 +20,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - Properties
     //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
     var presenter: NewsPresenterProtocol!
+    
     var vkid: VKID!
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
@@ -273,6 +274,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - UISearchBarDelegate
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
         presenter.filterNews(searchText) // Обновляем данные при изменении текста
     }
     

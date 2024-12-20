@@ -28,7 +28,6 @@ class NewsPresenter: NewsPresenterProtocol {
     // MARK: - Properties
     var scene: SceneDelegate?
     
-    
     var filteredNews: [NewsEntity] = []
     var newsList: [NewsEntity] = []
     var vkid: VKID!
@@ -59,6 +58,7 @@ class NewsPresenter: NewsPresenterProtocol {
     
     func fetchNews() {
         // Загружаем новости (например, из CoreData или API)
+
         let coreDataManager = CoreDataManager.shared
         newsList = coreDataManager.fetchNews()
         filteredNews = newsList
@@ -86,8 +86,8 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     func handleActionButtonTap() {
-        print("алерт  але алерталерталерталерталерталерталерталертрт")
-        view?.showAlert()  // Даем команду представлению показать алерт
+        print("алерт")
+        view?.showAlert()  //даем команду view показать алерт
     }
     
     func logOut() {

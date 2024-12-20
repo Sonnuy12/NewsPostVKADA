@@ -30,3 +30,4 @@ class NewsModel: NewsModelProtocol {
         coreDataManager.deleteNews(news)
     }
 }
+

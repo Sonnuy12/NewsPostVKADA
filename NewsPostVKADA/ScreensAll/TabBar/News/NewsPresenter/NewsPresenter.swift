@@ -10,10 +10,10 @@ import VKID
 
 protocol NewsPresenterProtocol: AnyObject {
     func loadData()
-    var newsList: [NewsEntity] {get set}
+    var newsList: [NewsArticle] {get set}
     func filterNews(_ keyword: String)
     func numberOfItems() -> Int
-    
+    func fetchNews()
     var nameUser: String {get set}
     
     func handleActionButtonTap()
@@ -28,8 +28,8 @@ class NewsPresenter: NewsPresenterProtocol {
     // MARK: - Properties
     var scene: SceneDelegate?
     
-    var filteredNews: [NewsEntity] = []
-    var newsList: [NewsEntity] = []
+    var filteredNews: [NewsArticle] = []
+    var newsList: [NewsArticle] = []
     var vkid: VKID!
     
     
@@ -52,26 +52,45 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     func loadData() {
-        let news = model.fetchNews()
-        view?.updateNewsList(news)
+//        let news = model.fetchNews()
+        view?.updateNewsList(newsList)
     }
-    
     func fetchNews() {
-        // Загружаем новости (например, из CoreData или API)
+        let networkManager = NewsAPIManager()
+        let country = "ru" // Пример страны, которую вы хотите указать
 
-        let coreDataManager = CoreDataManager.shared
-        newsList = coreDataManager.fetchNews()
-        filteredNews = newsList
-        view?.reloadData()
+        networkManager.fetchNews(for: country) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let articles):
+                    // Обрабатываем успешно загруженные данные
+                    self?.newsList = articles
+                    self?.filteredNews = articles
+                    self?.view?.reloadData()
+                case .failure(let error):
+                    // Обрабатываем ошибку
+                    print("Error fetching news: \(error.localizedDescription)")
+                }
+            }
+        }
     }
+//    func fetchNews() {
+//        // Загружаем новости (например, из CoreData или API)
+//        let networkManager = NewsAPIManager.fetchNews(<#NewsAPIManager#>)
+//       // let coreDataManager = CoreDataManager.shared
+//          newsList = networkManager.fetchNews()
+//       // newsList = coreDataManager.fetchNews()
+//        filteredNews = newsList
+//        view?.reloadData()
+//    }
     
     func filterNews(_ keyword: String) {
         if keyword.isEmpty {
             filteredNews = newsList
         } else {
             filteredNews = newsList.filter { news in
-                news.title?.localizedCaseInsensitiveContains(keyword) == true ||
-                news.descriptionText?.localizedCaseInsensitiveContains(keyword) == true
+                news.title.localizedCaseInsensitiveContains(keyword) == true ||
+                news.description.localizedCaseInsensitiveContains(keyword) == true
             }
         }
         view?.reloadData()
@@ -81,7 +100,7 @@ class NewsPresenter: NewsPresenterProtocol {
         return filteredNews.count
     }
     
-    func news(at indexPath: IndexPath) -> NewsEntity {
+    func news(at indexPath: IndexPath) -> NewsArticle {
         return filteredNews[indexPath.item]
     }
     

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		321942762D160BB200FD04CF /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 321942752D160BB200FD04CF /* SDWebImage */; };
+		321942782D160BB200FD04CF /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 321942772D160BB200FD04CF /* SDWebImageMapKit */; };
 		F289ABF52D10603B001BFF13 /* VKID in Frameworks */ = {isa = PBXBuildFile; productRef = F289ABF42D10603B001BFF13 /* VKID */; };
 		F289ABF72D10603B001BFF13 /* VKIDCore in Frameworks */ = {isa = PBXBuildFile; productRef = F289ABF62D10603B001BFF13 /* VKIDCore */; };
 /* End PBXBuildFile section */
@@ -41,7 +43,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				321942762D160BB200FD04CF /* SDWebImage in Frameworks */,
 				F289ABF52D10603B001BFF13 /* VKID in Frameworks */,
+				321942782D160BB200FD04CF /* SDWebImageMapKit in Frameworks */,
 				F289ABF72D10603B001BFF13 /* VKIDCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +91,8 @@
 			packageProductDependencies = (
 				F289ABF42D10603B001BFF13 /* VKID */,
 				F289ABF62D10603B001BFF13 /* VKIDCore */,
+				321942752D160BB200FD04CF /* SDWebImage */,
+				321942772D160BB200FD04CF /* SDWebImageMapKit */,
 			);
 			productName = NewsPostVKADA;
 			productReference = F2B492CF2D0657F000FED4E3 /* NewsPostVKADA.app */;
@@ -119,6 +125,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */,
+				321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2B492D02D0657F000FED4E3 /* Products */;
@@ -348,6 +355,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.20.0;
+			};
+		};
 		F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/VKCOM/vkid-ios-sdk.git";
@@ -359,6 +374,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		321942752D160BB200FD04CF /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		321942772D160BB200FD04CF /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
 		F289ABF42D10603B001BFF13 /* VKID */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */;

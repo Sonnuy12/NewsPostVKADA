@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NewsModelProtocol {
-    func fetchNews() -> [NewsEntity]
+    func fetchNews() /*-> [NewsArticle]*/
     
     func addNews(_ news: NewsEntity)
     
@@ -18,8 +18,8 @@ protocol NewsModelProtocol {
 class NewsModel: NewsModelProtocol {
     private let coreDataManager = CoreDataManager.shared
     
-    func fetchNews() -> [NewsEntity] {
-        return coreDataManager.fetchNews()
+    func fetchNews() /*-> [NewsArticle]*/ {
+//        return coreDataManager.fetchNews()
     }
     
     func addNews(_ news: NewsEntity){

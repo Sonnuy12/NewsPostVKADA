@@ -1,6 +1,15 @@
 {
-  "originHash" : "9a5e5f95589e70b96a6972da44083c510165fd23ea979f5b811d93725bede97e",
+  "originHash" : "9b156b63fa81f5909f1c0f8b962f0e1e5db34fa04faac23475ae849647cb8906",
   "pins" : [
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage",
+      "state" : {
+        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
+        "version" : "5.20.0"
+      }
+    },
     {
       "identity" : "vkid-ios-sdk",
       "kind" : "remoteSourceControl",

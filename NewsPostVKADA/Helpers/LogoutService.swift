@@ -50,3 +50,29 @@ final class LogoutService {
         }
     }
 }
+//ФУНКЦИЯ ИЗ NEWSVIEW (может пригодиться)
+//выбрал более оптимальный способ через базу данных
+//        //получение данных из UserDefaults
+//        let userDefaults = UserDefaults.standard
+//          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
+//             let imageURL = URL(string: imageURLString) {
+//              // Загрузка изображения асинхронно
+//              URLSession.shared.dataTask(with: imageURL) { data, response, error in
+//                  guard let data = data, error == nil else {
+//                      print("Ошибка загрузки изображения: \(String(describing: error))")
+//                      return
+//                  }
+//                  DispatchQueue.main.async {
+//                      profileImageView.image = UIImage(data: data)
+//                  }
+//              }.resume()
+//          } else {
+//              profileImageView.image = UIImage(systemName: "Person")
+//          }
+//
+//        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
+//            let fullUserName = userName + " " + userLastName
+//            nameLabel.text = fullUserName
+//          } else {
+//              nameLabel.text = "Гость" // Имя по умолчанию
+//          }

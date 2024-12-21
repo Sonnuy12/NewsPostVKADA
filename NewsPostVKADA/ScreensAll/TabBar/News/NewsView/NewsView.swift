@@ -20,11 +20,9 @@ protocol NewsViewProtocol: AnyObject {
 class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
   
     // MARK: - Properties
-    //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
     var presenter: NewsPresenterProtocol!
-    //private let coreDataManager: CoreDataManager
-    
     var vkid: VKID!
+    
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
         layout.itemSize = CGSize(width: view.frame.width - 20, height: 500)
@@ -34,11 +32,11 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
 
         $0.delegate = self
         $0.dataSource = self
-        $0.backgroundColor = .white // в процессе появления коллекций с данными изменить цвет на белый
+        $0.backgroundColor = .white
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
         
-        // Добавление Refresh Control
+        //Добавление Refresh Control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
         $0.refreshControl = refreshControl // Привязываем refreshControl к коллекции
@@ -54,12 +52,8 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         searchBar.searchTextField.backgroundColor = .systemGray6
         searchBar.searchTextField.leftView?.tintColor = .gray
         searchBar.searchTextField.rightView?.tintColor = .gray
-        
         searchBar.backgroundColor = .newLightGrey
-        // searchBar.searchTextField.clipsToBounds = true
         searchBar.searchBarStyle = .minimal
-        // searchBar.showsCancelButton = true
-        //searchBar.backgroundImage = UIImage()
         
         return searchBar
     }()
@@ -74,9 +68,22 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         $0.backgroundColor = .white
         return $0
     }(UILabel())
-    
+
+    // MARK: - Func
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubViews(searchBar, newsCollection, newsLabel)
+        presenter.loadInitialNews()
+        presenter?.loadData()
+        setupNavigationBar()
+        setupConstaints()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+       // setupNavigationBar()
+    }
     private func setupNavigationBar() {
-        
+        view.backgroundColor = .newLightGrey
         let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
         //1)фотка
@@ -122,32 +129,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             nameLabel.text = "Гость"
             profileImageView.image = UIImage(systemName: "person.circle")
         }
-       //выбрал более оптимальный способ через базу данных 
-//        //получение данных из UserDefaults
-//        let userDefaults = UserDefaults.standard
-//          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
-//             let imageURL = URL(string: imageURLString) {
-//              // Загрузка изображения асинхронно
-//              URLSession.shared.dataTask(with: imageURL) { data, response, error in
-//                  guard let data = data, error == nil else {
-//                      print("Ошибка загрузки изображения: \(String(describing: error))")
-//                      return
-//                  }
-//                  DispatchQueue.main.async {
-//                      profileImageView.image = UIImage(data: data)
-//                  }
-//              }.resume()
-//          } else {
-//              profileImageView.image = UIImage(systemName: "Person")
-//          }
-//
-//        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
-//            let fullUserName = userName + " " + userLastName
-//            nameLabel.text = fullUserName
-//          } else {
-//              nameLabel.text = "Гость" // Имя по умолчанию
-//          }
-        
         //3)добавляемя фотку и имя в контейнер
         containerView.addSubview(profileImageView)
         containerView.addSubview(nameLabel)
@@ -203,22 +184,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
                 profileImageView.image = UIImage(systemName: "person.circle")
             }
         }
-    }
-    
-   
-    // MARK: - Func
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.addSubViews(searchBar, newsCollection, newsLabel)
-        view.backgroundColor = .newLightGrey
-        presenter.loadInitialNews()
-        presenter?.loadData()
-        setupNavigationBar()
-        setupConstaints()
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-       // setupNavigationBar()
     }
     private func setupConstaints() {
         NSLayoutConstraint.activate([
@@ -278,11 +243,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         presenter.refreshNews() // Вызываем метод для получения новых данных
     }
     
-//    @objc private func refreshData() {
-//        presenter.loadFavorites()
-//        // останавливаю анимацию прямо во view
-//        newsCollection.refreshControl?.endRefreshing()
-//    }
     
     // MARK: - UISearchBarDelegate
     
@@ -325,7 +285,7 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         navigationController?.pushViewController(secondView.self, animated: true)
     }
 }
-
+//
 extension NewsView {
     func stopRefreshing() {
         newsCollection.refreshControl?.endRefreshing()

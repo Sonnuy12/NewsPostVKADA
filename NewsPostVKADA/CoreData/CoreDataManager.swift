@@ -101,6 +101,7 @@ extension CoreDataManager {
         }
     }
     
+    
     func deleteUserDetails() {
         let fetchRequest: NSFetchRequest<NewsEntity> = NewsEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "userFirstName != nil OR userLastName != nil OR userAvatar != nil")

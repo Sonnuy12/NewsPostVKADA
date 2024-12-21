@@ -19,6 +19,7 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
     // MARK: - Properties
     var presenter:  ErrorNilVkPresenterProtocol!
     var vkid: VKID!
+  
     //MARK: - Создание кастомной коллекции
     lazy var VkNewsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
@@ -42,9 +43,10 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(VkNewsCollection)
         view.backgroundColor = .green
-        setupNavigationBar()
         presenter?.fetchVKNews()
+        setupNavigationBar()
         setupConstaints()
+
     }
     
     private func setupConstaints() {
@@ -113,31 +115,6 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
             nameLabel.text = "Гость"
             profileImageView.image = UIImage(systemName: "person.circle")
         }
-        //выбрал более оптимальный способ через базу данных
-        //        //получение данных из UserDefaults
-        //        let userDefaults = UserDefaults.standard
-        //          if let imageURLString = userDefaults.string(forKey: "UserAvatarURL"),
-        //             let imageURL = URL(string: imageURLString) {
-        //              // Загрузка изображения асинхронно
-        //              URLSession.shared.dataTask(with: imageURL) { data, response, error in
-        //                  guard let data = data, error == nil else {
-        //                      print("Ошибка загрузки изображения: \(String(describing: error))")
-        //                      return
-        //                  }
-        //                  DispatchQueue.main.async {
-        //                      profileImageView.image = UIImage(data: data)
-        //                  }
-        //              }.resume()
-        //          } else {
-        //              profileImageView.image = UIImage(systemName: "Person")
-        //          }
-        //
-        //        if let userName = userDefaults.string(forKey: "UserFirstName"), let userLastName = userDefaults.string(forKey: "UserLastName")  {
-        //            let fullUserName = userName + " " + userLastName
-        //            nameLabel.text = fullUserName
-        //          } else {
-        //              nameLabel.text = "Гость" // Имя по умолчанию
-        //          }
         
         //3)добавляемя фотку и имя в контейнер
         containerView.addSubview(profileImageView)
@@ -216,7 +193,7 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         // Показать алерт
         present(alertController, animated: true, completion: nil)
     }
-    // MARK: - extension для коллекции
+   
     
     @objc func actionButtonTapped() {
         print("Кнопка нажата")

@@ -9,18 +9,20 @@ import Foundation
 import VKID
 
 protocol NewsPresenterProtocol: AnyObject {
-    func loadData()
     var newsList: [NewsArticle] {get set}
+   
+    func loadData()
     func filterNews(_ keyword: String)
     func numberOfItems() -> Int
-    func fetchNews()
+//    func fetchNews()
+    func refreshNews()
+    func loadInitialNews()
     var nameUser: String {get set}
     
     func handleActionButtonTap()
     func logOut()
     func configureVKID(vkid: VKID)
-    
-    
+
 }
 class NewsPresenter: NewsPresenterProtocol {
     
@@ -52,13 +54,32 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     func loadData() {
-//        let news = model.fetchNews()
+        //        let news = model.fetchNews()
         view?.updateNewsList(newsList)
     }
-    func fetchNews() {
+//    func fetchNews() {
+//        let networkManager = NewsAPIManager()
+//        let country = "ru" // Пример страны, которую вы хотите указать
+//        
+//        networkManager.fetchNews(for: country) { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let articles):
+//                    // Обрабатываем успешно загруженные данные
+//                    self?.newsList = articles
+//                    self?.filteredNews = articles
+//                    self?.view?.reloadData()
+//                case .failure(let error):
+//                    // Обрабатываем ошибку
+//                    print("Error fetching news: \(error.localizedDescription)")
+//                }
+//            }
+//        }
+//    }
+    func loadInitialNews() {
         let networkManager = NewsAPIManager()
         let country = "ru" // Пример страны, которую вы хотите указать
-
+        
         networkManager.fetchNews(for: country) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -66,7 +87,7 @@ class NewsPresenter: NewsPresenterProtocol {
                     // Обрабатываем успешно загруженные данные
                     self?.newsList = articles
                     self?.filteredNews = articles
-                    self?.view?.reloadData()
+                    self?.view?.reloadData() // Обновляем интерфейс
                 case .failure(let error):
                     // Обрабатываем ошибку
                     print("Error fetching news: \(error.localizedDescription)")
@@ -74,15 +95,58 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
     }
+
+    func refreshNews() {
+        let networkManager = NewsAPIManager()
+        let country = "ru" // Пример страны, которую вы хотите указать
+        
+        networkManager.fetchNews(for: country) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let articles):
+                    // Обрабатываем успешно загруженные данные
+                    self?.newsList = articles
+                    self?.filteredNews = articles
+                    self?.view?.reloadData() // Обновляем интерфейс
+                    self?.view?.stopRefreshing() // Останавливаем анимацию refresh control
+                case .failure(let error):
+                    // Обрабатываем ошибку
+                    print("Error fetching news: \(error.localizedDescription)")
+                    self?.view?.stopRefreshing() // Останавливаем анимацию в случае ошибки
+                }
+            }
+        }
+    }
 //    func fetchNews() {
-//        // Загружаем новости (например, из CoreData или API)
-//        let networkManager = NewsAPIManager.fetchNews(<#NewsAPIManager#>)
-//       // let coreDataManager = CoreDataManager.shared
-//          newsList = networkManager.fetchNews()
-//       // newsList = coreDataManager.fetchNews()
-//        filteredNews = newsList
-//        view?.reloadData()
+//        let networkManager = NewsAPIManager()
+//        let country = "ru" // Пример страны, которую вы хотите указать
+//        
+//        networkManager.fetchNews(for: country) { [weak self] result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let articles):
+//                    // Обрабатываем успешно загруженные данные
+//                    self?.newsList = articles
+//                    self?.filteredNews = articles
+//                    self?.view?.reloadData() // Обновляем интерфейс
+//                    self?.view?.stopRefreshing() // Останавливаем анимацию refresh control
+//                case .failure(let error):
+//                    // Обрабатываем ошибку
+//                    print("Error fetching news: \(error.localizedDescription)")
+//                    self?.view?.stopRefreshing() // Останавливаем анимацию в случае ошибки
+//                }
+//            }
+//        }
 //    }
+    //    func fetchNews() {
+    //        // Загружаем новости (например, из CoreData или API)
+    //        let networkManager = NewsAPIManager.fetchNews(<#NewsAPIManager#>)
+    //       // let coreDataManager = CoreDataManager.shared
+    //          newsList = networkManager.fetchNews()
+    //       // newsList = coreDataManager.fetchNews()
+    //        filteredNews = newsList
+    //        view?.reloadData()
+    //    }
     
     func filterNews(_ keyword: String) {
         if keyword.isEmpty {
@@ -108,7 +172,7 @@ class NewsPresenter: NewsPresenterProtocol {
         print("алерт")
         view?.showAlert()  //даем команду view показать алерт
     }
-    
+   
     func logOut() {
         guard let vkid = vkid else {
             print("VKID не инициализирован")
@@ -128,7 +192,7 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
         
-    
+        
     }
     
     // Ваша функция logout остается без изменений

@@ -13,16 +13,16 @@ protocol NewsViewProtocol: AnyObject {
     func updateNewsList(_ news: [NewsArticle])
     func reloadData()
     func showAlert()
+    func stopRefreshing()
 
 }
 
 class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
   
-    
-    
     // MARK: - Properties
     //желательно использовать опционал и потом все адаптировать под его исп(добавить "?" и "??")
     var presenter: NewsPresenterProtocol!
+    //private let coreDataManager: CoreDataManager
     
     var vkid: VKID!
     lazy var newsCollection: UICollectionView = {
@@ -31,12 +31,18 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
-        
+
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = .white // в процессе появления коллекций с данными изменить цвет на белый
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomNewsCell.self, forCellWithReuseIdentifier: CustomNewsCell.reuseId)
+        
+        // Добавление Refresh Control
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
+        $0.refreshControl = refreshControl // Привязываем refreshControl к коллекции
+        
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
@@ -57,7 +63,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         
         return searchBar
     }()
-    
     
     lazy var newsLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +92,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
         nameLabel.textColor = .black
-        
         
         let userDetails = CoreDataManager.shared.fetchUserDetails()
        
@@ -208,15 +212,14 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         super.viewDidLoad()
         view.addSubViews(searchBar, newsCollection, newsLabel)
         view.backgroundColor = .newLightGrey
-        presenter.fetchNews()
+        presenter.loadInitialNews()
         presenter?.loadData()
         setupNavigationBar()
         setupConstaints()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupNavigationBar()
-       
+       // setupNavigationBar()
     }
     private func setupConstaints() {
         NSLayoutConstraint.activate([
@@ -253,7 +256,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         // Кнопка "ОК"
         let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
             self.presenter.logOut()
-            
         }
         
         // Кнопка "Отмена"
@@ -267,12 +269,21 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         present(alertController, animated: true, completion: nil)
     }
     
-    
+// MARK: - UISearchBarDelegate
     @objc func actionButtonTapped() {
         print("Кнопка нажата")
         presenter.handleActionButtonTap()
     }
+    // Обработчик обновления данных
+    @objc private func refreshData() {
+        presenter.refreshNews() // Вызываем метод для получения новых данных
+    }
     
+//    @objc private func refreshData() {
+//        presenter.loadFavorites()
+//        // останавливаю анимацию прямо во view
+//        newsCollection.refreshControl?.endRefreshing()
+//    }
     
     // MARK: - UISearchBarDelegate
     
@@ -292,6 +303,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
 // MARK: - extension для коллекции
 extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("количество новостей: \(presenter.newsList.count)")
         return presenter.newsList.count
     }
     
@@ -312,8 +324,12 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         let secondView = Builder.createSecondNewsView(newsData: selectedNews)
         
         navigationController?.pushViewController(secondView.self, animated: true)
-
     }
 }
 
+extension NewsView {
+    func stopRefreshing() {
+        newsCollection.refreshControl?.endRefreshing()
+    }
+}
 

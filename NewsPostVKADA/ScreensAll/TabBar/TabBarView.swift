@@ -16,8 +16,8 @@ class TabBarController: UITabBarController {
     private var favoritesStorage: UIViewController 
     init(vkid: VKID) {
         self.news = Builder.CreateNewsView(vkid: vkid)
-        self.errorNilVk = Builder.CreateErrorNilVkView()
-        self.favoritesStorage = Builder.CreateFavoritesStorageView()
+        self.errorNilVk = Builder.CreateErrorNilVkView(vkid: vkid)
+        self.favoritesStorage = Builder.CreateFavoritesStorageView(vkid: vkid)
         
         super.init(nibName: nil, bundle: nil)
     }

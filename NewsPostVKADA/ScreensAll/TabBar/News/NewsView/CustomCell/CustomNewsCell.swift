@@ -80,7 +80,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     }
     
     private func setupItemsInContentViews() {
-        contentView.backgroundColor = .newLightGrey
+        contentView.backgroundColor = .cyan
         contentView.layer.cornerRadius = 20
         contentView.addSubViews(newsImage,HstackSiteData,mainLabel,descriptionLabel)
         newsImage.addSubview(isFavourite)

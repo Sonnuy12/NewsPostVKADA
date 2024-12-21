@@ -309,7 +309,10 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedNews = presenter.newsList[indexPath.item]
-        print(selectedNews)
+        let secondView = Builder.createSecondNewsView(newsData: selectedNews)
+        
+        navigationController?.pushViewController(secondView.self, animated: true)
+
     }
 }
 

@@ -8,17 +8,6 @@
 // 272febfd86b748d8a596bb715e43fdb6 my API-key
 import Foundation
 
-struct NewsArticle: Decodable {
-    let title: String
-    let description: String
-    let urlToImage: String?
-    let publishedAt: String
-    let url: String
-}
-
-struct NewsResponse: Decodable {
-    let articles: [NewsArticle]
-}
 
 //protocol NewsAPIManagerProtocol: AnyObject {
 //    func fetchNews()

@@ -43,4 +43,11 @@ class Builder {
         view.presenter = presenter
         return view
     }
+    
+    static func createSecondNewsView(newsData:NewsArticle) -> UIViewController {
+        let view = SecondNewsView()
+        let presenter = SecondNewsPresenter(view: view, newsData: newsData)
+        view.presenter = presenter
+        return view
+    }
 }

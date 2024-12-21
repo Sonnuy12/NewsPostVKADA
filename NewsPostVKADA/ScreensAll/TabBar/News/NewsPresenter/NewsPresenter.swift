@@ -57,25 +57,25 @@ class NewsPresenter: NewsPresenterProtocol {
         //        let news = model.fetchNews()
         view?.updateNewsList(newsList)
     }
-//    func fetchNews() {
-//        let networkManager = NewsAPIManager()
-//        let country = "ru" // Пример страны, которую вы хотите указать
-//        
-//        networkManager.fetchNews(for: country) { [weak self] result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let articles):
-//                    // Обрабатываем успешно загруженные данные
-//                    self?.newsList = articles
-//                    self?.filteredNews = articles
-//                    self?.view?.reloadData()
-//                case .failure(let error):
-//                    // Обрабатываем ошибку
-//                    print("Error fetching news: \(error.localizedDescription)")
-//                }
-//            }
-//        }
-//    }
+    //    func fetchNews() {
+    //        let networkManager = NewsAPIManager()
+    //        let country = "ru" // Пример страны, которую вы хотите указать
+    //
+    //        networkManager.fetchNews(for: country) { [weak self] result in
+    //            DispatchQueue.main.async {
+    //                switch result {
+    //                case .success(let articles):
+    //                    // Обрабатываем успешно загруженные данные
+    //                    self?.newsList = articles
+    //                    self?.filteredNews = articles
+    //                    self?.view?.reloadData()
+    //                case .failure(let error):
+    //                    // Обрабатываем ошибку
+    //                    print("Error fetching news: \(error.localizedDescription)")
+    //                }
+    //            }
+    //        }
+    //    }
     func loadInitialNews() {
         let networkManager = NewsAPIManager()
         let country = "ru" // Пример страны, которую вы хотите указать
@@ -95,7 +95,7 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
     }
-
+    
     func refreshNews() {
         let networkManager = NewsAPIManager()
         let country = "ru" // Пример страны, которую вы хотите указать
@@ -117,27 +117,27 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
     }
-//    func fetchNews() {
-//        let networkManager = NewsAPIManager()
-//        let country = "ru" // Пример страны, которую вы хотите указать
-//        
-//        networkManager.fetchNews(for: country) { [weak self] result in
-//            DispatchQueue.main.async {
-//                switch result {
-//                case .success(let articles):
-//                    // Обрабатываем успешно загруженные данные
-//                    self?.newsList = articles
-//                    self?.filteredNews = articles
-//                    self?.view?.reloadData() // Обновляем интерфейс
-//                    self?.view?.stopRefreshing() // Останавливаем анимацию refresh control
-//                case .failure(let error):
-//                    // Обрабатываем ошибку
-//                    print("Error fetching news: \(error.localizedDescription)")
-//                    self?.view?.stopRefreshing() // Останавливаем анимацию в случае ошибки
-//                }
-//            }
-//        }
-//    }
+    //    func fetchNews() {
+    //        let networkManager = NewsAPIManager()
+    //        let country = "ru" // Пример страны, которую вы хотите указать
+    //
+    //        networkManager.fetchNews(for: country) { [weak self] result in
+    //            DispatchQueue.main.async {
+    //                switch result {
+    //                case .success(let articles):
+    //                    // Обрабатываем успешно загруженные данные
+    //                    self?.newsList = articles
+    //                    self?.filteredNews = articles
+    //                    self?.view?.reloadData() // Обновляем интерфейс
+    //                    self?.view?.stopRefreshing() // Останавливаем анимацию refresh control
+    //                case .failure(let error):
+    //                    // Обрабатываем ошибку
+    //                    print("Error fetching news: \(error.localizedDescription)")
+    //                    self?.view?.stopRefreshing() // Останавливаем анимацию в случае ошибки
+    //                }
+    //            }
+    //        }
+    //    }
     //    func fetchNews() {
     //        // Загружаем новости (например, из CoreData или API)
     //        let networkManager = NewsAPIManager.fetchNews(<#NewsAPIManager#>)
@@ -172,51 +172,62 @@ class NewsPresenter: NewsPresenterProtocol {
         print("алерт")
         view?.showAlert()  //даем команду view показать алерт
     }
-   
     func logOut() {
-        guard let vkid = vkid else {
-            print("VKID не инициализирован")
-            return
-        }
-        
-        // Используем вашу функцию logout
-        logout(vkid: vkid) { result in
+        LogoutService.shared.logOut(vkid: vkid) { result in
             switch result {
             case .success:
                 print("Выход успешно выполнен через презентер")
-                CoreDataManager.shared.deleteUserDetails()
-                // Отправляем уведомление об успешном выходе
-                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+                // Дополнительная логика для конкретного презентера (если нужно)
             case .failure(let error):
                 print("Ошибка при выходе через презентер: \(error.localizedDescription)")
             }
         }
-        
-        
-    }
-    
-    // Ваша функция logout остается без изменений
-    private func logout(vkid: VKID, completion: @escaping (Result<Void, Error>) -> Void) {
-        let session: UserSession? = vkid.currentAuthorizedSession
-        session?.logout { result in
-            switch result {
-            case .success:
-                print("Выход выполнен успешно")
-                // Очистка данных из UserDefaults
-                let userDefaults = UserDefaults.standard
-                userDefaults.removeObject(forKey: "UserFirstName")
-                userDefaults.removeObject(forKey: "UserLastName")
-                userDefaults.removeObject(forKey: "UserAvatarURL")
-                
-                // Синхронизируем изменения
-                userDefaults.synchronize()
-                print("Данные пользователя удалены из UserDefaults")
-                completion(.success(()))
-            case .failure(let error):
-                print("Ошибка при выходе: \(error.localizedDescription)")
-                completion(.failure(error))
-            }
-        }
     }
 }
+//    func logOut() {
+//        guard let vkid = vkid else {
+//            print("VKID не инициализирован")
+//            return
+//        }
+//        
+//        // Используем вашу функцию logout
+//        logout(vkid: vkid) { result in
+//            switch result {
+//            case .success:
+//                print("Выход успешно выполнен через презентер")
+//                CoreDataManager.shared.deleteUserDetails()
+//                // Отправляем уведомление об успешном выходе
+//                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
+//            case .failure(let error):
+//                print("Ошибка при выходе через презентер: \(error.localizedDescription)")
+//            }
+//        }
+//        
+//        
+//    }
+//    
+//    // Ваша функция logout остается без изменений
+//    private func logout(vkid: VKID, completion: @escaping (Result<Void, Error>) -> Void) {
+//        let session: UserSession? = vkid.currentAuthorizedSession
+//        session?.logout { result in
+//            switch result {
+//            case .success:
+//                print("Выход выполнен успешно")
+//                // Очистка данных из UserDefaults
+//                let userDefaults = UserDefaults.standard
+//                userDefaults.removeObject(forKey: "UserFirstName")
+//                userDefaults.removeObject(forKey: "UserLastName")
+//                userDefaults.removeObject(forKey: "UserAvatarURL")
+//                
+//                // Синхронизируем изменения
+//                userDefaults.synchronize()
+//                print("Данные пользователя удалены из UserDefaults")
+//                completion(.success(()))
+//            case .failure(let error):
+//                print("Ошибка при выходе: \(error.localizedDescription)")
+//                completion(.failure(error))
+//            }
+//        }
+//    }
+
 

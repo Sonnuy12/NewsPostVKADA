@@ -18,8 +18,11 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     var presenter:  FavoritesStoragePresenterProtocol!
     
     var vkid: VKID!
+//нужно для поиска, пока не понимаю как работает
+    private var isSearchActive: Bool = false
+    private var filteredFavorites: [NewsEntity] = []
     
-    lazy var FavouriteCollection: UICollectionView = {
+    lazy var favouriteCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
         layout.scrollDirection = .vertical
@@ -41,6 +44,15 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
         return collectionView
     }()
     
+    lazy var favouriteLabel: UILabel = {
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.text = "  Избранное"
+        $0.textColor = .black
+        $0.font = .systemFont(ofSize: 34, weight: .bold)
+        $0.numberOfLines = 0
+        return $0
+    }(UILabel())
+    
     lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -49,31 +61,17 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
         searchBar.searchTextField.backgroundColor = .systemGray6
         searchBar.searchTextField.leftView?.tintColor = .gray
         searchBar.searchTextField.rightView?.tintColor = .gray
-        
         searchBar.backgroundColor = .newLightGrey
-        // searchBar.searchTextField.clipsToBounds = true
         searchBar.searchBarStyle = .minimal
-        // searchBar.showsCancelButton = true
-        //searchBar.backgroundImage = UIImage()
         
         return searchBar
     }()
     
-    lazy var FavouriteLabel: UILabel = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = "Избранное"
-        $0.textColor = .black
-        $0.font = .systemFont(ofSize: 34, weight: .bold)
-        $0.numberOfLines = 0
-        return $0
-    }(UILabel())
-    
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubViews(FavouriteCollection,FavouriteLabel)
+        view.addSubViews(favouriteCollection, favouriteLabel, searchBar)
         view.backgroundColor = .white
-        //        presenter.configureVKID(vkid: VKID)
         setupConstaints()
         presenter.loadFavorites()
         setupNavigationBar()
@@ -81,40 +79,28 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     
     func displaySavedNews(_ news: [NewsEntity]) {
         presenter.favorites = news
-        FavouriteCollection.reloadData()
+        favouriteCollection.reloadData()
     }
     
     private func setupConstaints() {
-                NSLayoutConstraint.activate([
-                    FavouriteCollection.topAnchor.constraint(equalTo: FavouriteLabel.bottomAnchor, constant: 15),
-                    FavouriteCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                    FavouriteCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                    FavouriteCollection.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        
-                    FavouriteLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                    FavouriteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-                    FavouriteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,constant: -16),
-                    FavouriteLabel.heightAnchor.constraint(equalToConstant: 40),
-        
-                ])
-//        NSLayoutConstraint.activate([
-//            //SearchBar
-//            searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
-//            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
-//            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-//            searchBar.heightAnchor.constraint(equalToConstant: 40),
-//            
-//            //Лейбл "Новости"
-//            FavouriteLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-//            FavouriteLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
-//            FavouriteLabel.heightAnchor.constraint(equalToConstant: 70),
-//            
-//            //Коллекция
-//            FavouriteCollection.topAnchor.constraint(equalTo: FavouriteLabel.bottomAnchor),
-//            FavouriteCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            FavouriteCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            FavouriteCollection.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-//        ])
+        NSLayoutConstraint.activate([
+            //SearchBar
+            searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 100),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+            searchBar.heightAnchor.constraint(equalToConstant: 40),
+            
+            //Лейбл "Изб"
+            favouriteLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            favouriteLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
+            favouriteLabel.heightAnchor.constraint(equalToConstant: 70),
+            
+            //Коллекция
+            favouriteCollection.topAnchor.constraint(equalTo: favouriteLabel.bottomAnchor),
+            favouriteCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            favouriteCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            favouriteCollection.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
     
     
@@ -229,10 +215,8 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
             message: "Вы действительно хотите выйти из аккаунта?",
             preferredStyle: .alert
         )
-        
         // Кнопка "ОК"
         let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
-            //            self.presenter.configureVKID(vkid: self.vkid)
             self.presenter.logOut()
         }
         // Кнопка "Отмена"
@@ -241,7 +225,6 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
         }
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
-        
         // Показать алерт
         present(alertController, animated: true, completion: nil)
     }
@@ -252,7 +235,7 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     @objc private func refreshData() {
         presenter.loadFavorites()
         // останавливаю анимацию прямо во view
-        FavouriteCollection.refreshControl?.endRefreshing()
+        favouriteCollection.refreshControl?.endRefreshing()
     }
     //для кнопочки выхода
     @objc func actionButtonTapped() {
@@ -263,23 +246,53 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
 
 // MARK: - extension для коллекции
 extension FavoritesStorageView: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return presenter.favorites.count
-    }
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return presenter.favorites.count
+//    }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteCustomCell.reuseId, for: indexPath) as! FavouriteCustomCell
-        let savedNews = presenter.favorites[indexPath.item]
-        cell.configureElements(items: savedNews)
-        return cell
-    }
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteCustomCell.reuseId, for: indexPath) as! FavouriteCustomCell
+//        let savedNews = presenter.favorites[indexPath.item]
+//        cell.configureElements(items: savedNews)
+//        return cell
+//    }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // MARK: - выбор элемента в коллекции, здесь может быть добавлен переход к выбранной новости или ее удаление
         //Добавил метод для удаления
         let selectedNews = presenter.favorites[indexPath.item]
         presenter.deleteFavoriteNews(selectedNews)
         //
-        FavouriteCollection.reloadData()
+        favouriteCollection.reloadData()
         print("Новость удалена: \(selectedNews.title ?? "Без заголовка")")
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return isSearchActive ? filteredFavorites.count : presenter.favorites.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteCustomCell.reuseId, for: indexPath) as! FavouriteCustomCell
+        let savedNews = isSearchActive ? filteredFavorites[indexPath.item] : presenter.favorites[indexPath.item]
+        cell.configureElements(items: savedNews)
+        return cell
+    }
+}
+
+extension FavoritesStorageView {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        isSearchActive = !searchText.isEmpty
+        if isSearchActive {
+            presenter.searchFavorites(by: searchText)
+        } else {
+            filteredFavorites = []
+            favouriteCollection.reloadData()
+        }
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        isSearchActive = false
+        searchBar.text = ""
+        presenter.loadFavorites()
+        favouriteCollection.reloadData()
     }
 }

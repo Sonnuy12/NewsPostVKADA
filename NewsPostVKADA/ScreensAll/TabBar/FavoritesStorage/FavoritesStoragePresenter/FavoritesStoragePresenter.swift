@@ -56,6 +56,8 @@ protocol FavoritesStoragePresenterProtocol: AnyObject {
     func configureVKID(vkid: VKID)
     func logOut()
     func handleActionButtonTap()
+    
+    func searchFavorites(by keyword: String)
 }
 
 class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NSFetchedResultsControllerDelegate {
@@ -134,7 +136,24 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
             }
         }
     }
-    
+    //функция для searh, однозанчно требует доработак, после того, как сделаем массив Favorite 
+//    func searchFavorites(by title: String) {
+//        if title.isEmpty {
+//            favorites = coreDataManager.getAllNews() ?? []
+//        } else {
+//            favorites = coreDataManager.getAllNews()?.filter {
+//                $0.title?.lowercased().contains(title.lowercased()) ?? false
+//            } ?? []
+//        }
+//        view?.displaySavedNews(favorites) // Обновляем отображение в коллекции
+//    }
+    func searchFavorites(by keyword: String) {
+        let lowercasedKeyword = keyword.lowercased()
+        let filteredNews = favorites.filter { news in
+            news.title?.lowercased().contains(lowercasedKeyword) ?? false
+        }
+        view?.displaySavedNews(filteredNews)
+    }
     // MARK: - NSFetchedResultsControllerDelegate
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if let updatedFavorites = coreDataManager.getAllNews() {

@@ -69,10 +69,9 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         $0.text = "  Новости"
         $0.textAlignment = .left
         $0.textColor = .black
-        //$0.backgroundColor = .red
         $0.font = .systemFont(ofSize: 34, weight: .bold)
         $0.numberOfLines = 0
-        $0.backgroundColor = .red
+        $0.backgroundColor = .white
         return $0
     }(UILabel())
     

@@ -42,7 +42,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.axis = .horizontal
         $0.alignment = .leading
-        $0.distribution = .fillEqually
+        $0.distribution = .equalSpacing
         $0.spacing = 15
         $0.addArrangedSubview(websiteLabel)
         $0.addArrangedSubview(datePublication)
@@ -60,6 +60,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
     lazy var websiteLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        $0.widthAnchor.constraint(equalToConstant: 150).isActive = true
         $0.textColor = .white
         return $0
     }(UILabel())
@@ -101,7 +102,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         descriptionLabel.text = presenter.newsData.description
         mainLabel.text = presenter.newsData.title
         websiteLabel.text = presenter.newsData.url
-        datePublication.text = presenter.newsData.publishedAt
+        datePublication.text = presenter.newsData.publishedAt.toReadableDate()
         guard let url = URL(string: presenter.newsData.urlToImage ?? "") else { return }
         mainImage.sd_setImage(with: url)
        
@@ -161,13 +162,10 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
             UIColor.clear.cgColor,   // Прозрачный
             UIColor.black.cgColor    // Чёрный
         ]
-
         // Устанавливаем точки начала и конца градиента
      gradientLayer.locations = [0.5, 1.0]
-
         // Добавляем слой градиента в `imageView`
      mainImage.layer.insertSublayer(gradientLayer, at: 0)
-        print("gradient +")
        }
    
     func showError(_ message: String) {
@@ -180,8 +178,6 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         func openWebsite(url: URL) {
             UIApplication.shared.open(url)
         }
-
-
 }
 extension UIImage {
     func getRation() -> CGFloat? {

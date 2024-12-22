@@ -15,7 +15,7 @@ protocol NewsPresenterProtocol: AnyObject {
     func filterNews(_ keyword: String)
     func numberOfItems() -> Int
 //    func fetchNews()
-    func refreshNews()
+    func refreshNews(for query: String)
     func loadInitialNews()
     var nameUser: String {get set}
     
@@ -97,11 +97,11 @@ class NewsPresenter: NewsPresenterProtocol {
         }
     }
     
-    func refreshNews() {
+    func refreshNews(for query: String) {
         let networkManager = NewsAPIManager()
-        let country = "ru" // Пример страны, которую вы хотите указать
+       // let country = "ru" // Пример страны, которую вы хотите указать
         
-        networkManager.fetchNews(for: country) { [weak self] result in
+        networkManager.fetchNews(for: query ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let articles):

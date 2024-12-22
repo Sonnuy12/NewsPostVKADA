@@ -25,7 +25,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     
     lazy var newsCollection: UICollectionView = {
         let layout = $0.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.itemSize = CGSize(width: view.frame.width - 20, height: 500)
+        layout.itemSize = CGSize(width: view.frame.width - 20, height: 450)
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
@@ -240,16 +240,23 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }
     // Обработчик обновления данных
     @objc private func refreshData() {
-        presenter.refreshNews() // Вызываем метод для получения новых данных
+        newsCollection.refreshControl?.endRefreshing() // Вызываем метод для получения новых данных
     }
     
     
     // MARK: - UISearchBarDelegate
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        presenter.searchFavorites(by: searchText)
-        presenter.filterNews(searchText) // Обновляем данные при изменении текста
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let query = searchBar.text, !query.isEmpty else { return }
+        
+        // Запускаем поиск
+        presenter.refreshNews(for: query)
+        stopRefreshing()
     }
+    
+//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+////        presenter.searchFavorites(by: searchText)
+//        presenter.filterNews(searchText) // Обновляем данные при изменении текста
+//    }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         presenter.filterNews("") // Сбрасываем фильтр при отмене поиска
@@ -272,7 +279,7 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         guard let url = URL(string: news.urlToImage ?? "") else { return cell }
         cell.newsImage.sd_setImage(with: url)
         
-        cell.datePublication.text = news.publishedAt
+        cell.datePublication.text =  news.publishedAt.toReadableDate() ?? "Неизвестная дата"
         cell.mainLabel.text = news.title
         cell.descriptionLabel.text = news.description
         cell.websiteLabel.text = news.url

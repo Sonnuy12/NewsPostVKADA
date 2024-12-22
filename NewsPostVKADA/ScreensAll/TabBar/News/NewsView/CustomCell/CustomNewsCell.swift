@@ -24,7 +24,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.axis = .horizontal
         $0.alignment = .leading
-        $0.distribution = .fillEqually
+        $0.distribution = .equalSpacing
         $0.spacing = 15
         $0.addArrangedSubview(websiteLabel)
         $0.addArrangedSubview(datePublication)
@@ -33,7 +33,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     
     lazy var websiteLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        //        $0.numberOfLines = 0
+        $0.widthAnchor.constraint(equalToConstant: 150).isActive = true
         $0.font = .systemFont(ofSize: 14, weight: .medium)
         $0.textColor = .black
         return $0
@@ -82,7 +82,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     }
     
     private func setupItemsInContentViews() {
-        contentView.backgroundColor = .cyan
+        contentView.backgroundColor = .systemGray5
         contentView.layer.cornerRadius = 20
         contentView.addSubViews(newsImage,HstackSiteData,mainLabel,descriptionLabel)
         newsImage.addSubview(isFavourite)

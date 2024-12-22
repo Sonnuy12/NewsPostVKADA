@@ -83,9 +83,9 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        view.addSubview(scroll)
+        view.addSubViews(scroll,goToSiteButton)
         scroll.addSubview(contentView)
-        contentView.addSubViews(mainImage,mainLabel,descriptionLabel,goToSiteButton)
+        contentView.addSubViews(mainImage,mainLabel,descriptionLabel)
         mainImage.addSubViews(HstackSiteData)
         setupElements()
         setupConstraints()
@@ -143,10 +143,10 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
          
             
-            goToSiteButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 80),
-            goToSiteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            goToSiteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            goToSiteButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
+           // goToSiteButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 80),
+            goToSiteButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            goToSiteButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            goToSiteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
            
         ])
     }

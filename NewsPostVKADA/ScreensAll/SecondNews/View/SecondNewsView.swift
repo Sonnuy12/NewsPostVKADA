@@ -141,6 +141,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
             descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 10),
             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant:  -100),
          
             
            // goToSiteButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 80),

@@ -291,4 +291,3 @@ extension NewsView {
         newsCollection.refreshControl?.endRefreshing()
     }
 }
-

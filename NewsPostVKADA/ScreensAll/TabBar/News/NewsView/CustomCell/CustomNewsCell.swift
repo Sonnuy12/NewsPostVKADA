@@ -14,8 +14,8 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     
     lazy var newsImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.clipsToBounds = true
         $0.contentMode = .scaleAspectFill
+        $0.clipsToBounds = true
         $0.layer.cornerRadius = 20
         return $0
     }(UIImageView())
@@ -63,6 +63,9 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         return $0
     }(UILabel())
     
+  
+
+    
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setImage(UIImage(systemName: "star"), for: .normal)
@@ -87,12 +90,15 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     }
     
     func setupConstraints() {
+       
         NSLayoutConstraint.activate([
             
             newsImage.topAnchor.constraint(equalTo: contentView.topAnchor),
             newsImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             newsImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            newsImage.heightAnchor.constraint(equalToConstant: 260),
+            newsImage.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            newsImage.heightAnchor.constraint(equalToConstant: 200),
+        
             
             isFavourite.topAnchor.constraint(equalTo: newsImage.topAnchor, constant: 20),
             isFavourite.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -20),
@@ -101,11 +107,11 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
             HstackSiteData.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor, constant: 15),
             HstackSiteData.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor, constant: -15),
             
-            mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
+            mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 10),
             mainLabel.leadingAnchor.constraint(equalTo: newsImage.leadingAnchor,constant: 20),
             mainLabel.trailingAnchor.constraint(equalTo: newsImage.trailingAnchor,constant: -20),
             
-            descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
+            descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 10),
             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),

@@ -88,11 +88,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 
                                 // Формирование запроса для получения стены пользователя
                                 let parameters = [
-                                    "count": "10",  // Количество записей на стене
-                                    "access_token": token,
-                                    "v": "5.131"
+                                    "count": "10"  // Количество записей на стене
                                 ]
-                                
+
                                 func createVKAPIRequestURL(token: String, method: String, parameters: [String: String]) -> URL? {
                                     var urlComponents = URLComponents()
                                     urlComponents.scheme = "https"
@@ -100,8 +98,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                     urlComponents.path = "/method/\(method)"
                                     
                                     var queryItems = [
-                                        URLQueryItem(name: "access_token", value: token),
-                                        URLQueryItem(name: "v", value: "5.131")
+                                        URLQueryItem(name: "access_token", value: token), // Сохраняем только один токен
+                                        URLQueryItem(name: "v", value: "5.131") // Версия API
                                     ]
                                     
                                     parameters.forEach { key, value in

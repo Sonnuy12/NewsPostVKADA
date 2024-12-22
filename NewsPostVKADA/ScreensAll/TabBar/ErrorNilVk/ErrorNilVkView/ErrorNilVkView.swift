@@ -32,6 +32,7 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         $0.dataSource = self
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.register(CustomVKNewsCell.self, forCellWithReuseIdentifier: CustomVKNewsCell.reuseId)
+        $0.backgroundColor = .white
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
@@ -39,13 +40,15 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Новости"
+        title = "  Новости"
         navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(VkNewsCollection)
-        view.backgroundColor = .green
+        view.backgroundColor = .newLightGrey
         presenter?.fetchVKNews()
         setupNavigationBar()
         setupConstaints()
+        
+        
 
     }
     
@@ -180,7 +183,6 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         )
         // Кнопка "ОК"
         let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
-            //            self.presenter.configureVKID(vkid: self.vkid)
             self.presenter.logOut()
         }
         // Кнопка "Отмена"
@@ -217,3 +219,5 @@ extension ErrorNilVkView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
    
 }
+
+

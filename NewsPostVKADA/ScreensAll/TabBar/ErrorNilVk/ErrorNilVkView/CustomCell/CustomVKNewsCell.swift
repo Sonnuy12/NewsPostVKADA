@@ -78,13 +78,13 @@ class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
         setupConstraints()
     }
     
-    func configure(with news: ModelVKNews) {
+    func configure(with news: ModelVKNews ) {
         mainLabel.text = news.title
         descriptionLabel.text = news.descriptionText
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
-        datePublication.text = formatter.string(from: news.datePublicationPost)
-                VKnewsImage.image = UIImage(named: news.imageURL ?? "No Image")
+//        datePublication.text = formatter.string(from: news)
+        VKnewsImage.image = UIImage(named: news.imageURL ?? "No Image")
             
         }
     

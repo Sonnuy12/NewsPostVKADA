@@ -15,6 +15,9 @@ protocol ErrorNilVkPresenterProtocol: AnyObject {
     func configureVKID(vkid: VKID)
     func handleActionButtonTap()
     func logOut()
+    
+    //func fetchNewsFeed()
+    
 }
 
 class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
@@ -25,11 +28,27 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
     var apiService: VKApiServiceProtocol
     var vkid: VKID?
     
+    
     init(view: ErrorNilVkViewProtocol, apiService: VKApiServiceProtocol) {
         self.view = view
         self.apiService = apiService
     }
     // MARK: - Func
+
+    // Структуры для парсинга ответа
+    struct NewsFeedResponse: Codable {
+        let response: NewsFeedData
+    }
+
+    struct NewsFeedData: Codable {
+        let items: [NewsFeedItem]
+    }
+
+    struct NewsFeedItem: Codable {
+        let id: Int
+        let text: String
+        // Добавьте другие поля в зависимости от нужных данных
+    }
     func fetchVKNews() {
         apiService.fetchNews { [weak self] result in
             guard let self = self else { return }

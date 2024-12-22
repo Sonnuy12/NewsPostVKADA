@@ -31,12 +31,13 @@ class Builder {
     
     static func CreateErrorNilVkView(vkid: VKID) -> UIViewController {
         let view = ErrorNilVkView()
-        let vkApiService = VKApiService()
+        let vkApiService = VKApiService() 
         let presenter = ErrorNilVkPresenter(view: view, apiService: vkApiService)
         presenter.configureVKID(vkid: vkid)
         view.presenter = presenter
         return view
     }
+    
     
     static func CreateFavoritesStorageView(vkid: VKID) -> UIViewController {
         let view = FavoritesStorageView()

@@ -31,6 +31,7 @@ final class LogoutService {
                 userDefaults.removeObject(forKey: "UserFirstName")
                 userDefaults.removeObject(forKey: "UserLastName")
                 userDefaults.removeObject(forKey: "UserAvatarURL")
+                userDefaults.removeObject(forKey: "VKWallRequestURL")
                 
                 // Синхронизируем изменения
                 userDefaults.synchronize()

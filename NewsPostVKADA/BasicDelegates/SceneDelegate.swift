@@ -51,47 +51,58 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии")
                     print("ТОТ САМЫЙ SESSIONS: \(sessions1) дададададад")
                     print("ТОТ САМЫЙ ТОКЕН : \(String(describing: token)) ВСЁ")
+                    
+                    if let token = vkid.currentAuthorizedSession?.accessToken.value {
+                        print("Это личный токен пользователя: \(token)")
+                    }
                     vkid.currentAuthorizedSession?.fetchUser { result in
                         do {
-                               let user = try result.get()
-                               CoreDataManager.shared.addUserData(
+                            let user = try result.get()
+                            CoreDataManager.shared.addUserData(
                                 firstName: user.firstName ?? "nil",
-                                   lastName: user.lastName ?? "nil", 
-                                   avatarURL: user.avatarURL?.absoluteString
+                                lastName: user.lastName ?? "nil",
+                                avatarURL: user.avatarURL?.absoluteString
+                            )
+                            
+                            let userDefaults = UserDefaults.standard
+                            userDefaults.set(user.firstName, forKey: "UserFirstName")
+                            userDefaults.set(user.lastName, forKey: "UserLastName")
+                            userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
+                            
+                            // Сохраняем токен в UserDefaults
+                            if let token = vkid.currentAuthorizedSession?.accessToken.value {
+                                userDefaults.set(token, forKey: "vkToken")
+                                print("Токен сохранен: \(token)")
+                            } else {
+                                print("Не удалось получить токен.")
+                            }
+                            
+                            userDefaults.synchronize()
+                            
+                            print("Сохранено в Core Data и UserDefaults: \(user.firstName ?? "nil") \(user.lastName ?? "nil"), \(String(describing: user.avatarURL))")
+                            
+                            // Используем токен для формирования запроса
+                            if let token = vkid.currentAuthorizedSession?.accessToken.value {
+                                print("Это личный токен пользователя: \(token)")
                                 
-                               )
-                               
-                               let userDefaults = UserDefaults.standard
-                               userDefaults.set(user.firstName, forKey: "UserFirstName")
-                               userDefaults.set(user.lastName, forKey: "UserLastName")
-                               userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
-                               userDefaults.synchronize()
-                               
-                               print("Сохранено в Core Data и UserDefaults: \(user.firstName) \(user.lastName), \(String(describing: user.avatarURL))")
-                            //получаем токен для работы с VK API
-                            print("Токен: \(String(describing: token))")
-                            if let token = vkid.currentAuthorizedSession?.accessToken.value {  // Извлекаем строковое значение токена
-                                // Формируем параметры для запроса
+                                // Формирование запроса для получения стены пользователя
                                 let parameters = [
-                                    "filters": "post",
-                                    "count": "10",
-                                    "scope": "news,offline"  // Добавляем scope с нужными правами доступа
+                                    "count": "10",  // Количество записей на стене
+                                    "access_token": token,
+                                    "v": "5.131"
                                 ]
                                 
-                                // Функция для создания URL
                                 func createVKAPIRequestURL(token: String, method: String, parameters: [String: String]) -> URL? {
                                     var urlComponents = URLComponents()
                                     urlComponents.scheme = "https"
                                     urlComponents.host = "api.vk.com"
                                     urlComponents.path = "/method/\(method)"
                                     
-                                    // Базовые параметры, которые всегда нужны
                                     var queryItems = [
                                         URLQueryItem(name: "access_token", value: token),
-                                        URLQueryItem(name: "v", value: "5.131") // Указываем версию API
+                                        URLQueryItem(name: "v", value: "5.131")
                                     ]
                                     
-                                    // Добавляем переданные параметры
                                     parameters.forEach { key, value in
                                         queryItems.append(URLQueryItem(name: key, value: value))
                                     }
@@ -100,22 +111,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                     return urlComponents.url
                                 }
                                 
-                                // Создаем URL для запроса
-                                if let requestURL = createVKAPIRequestURL(token: token, method: "newsfeed.get", parameters: parameters) {
-                                    print("Сформированная ссылка: \(requestURL)")
+                                // Запрос стены пользователя
+                                if let requestURL = createVKAPIRequestURL(token: token, method: "wall.get", parameters: parameters) {
+                                    let requestURLString = requestURL.absoluteString
+                                    print("Сформированная ссылка для стены: \(requestURL)")
+                                    
+                                    // Сохраняем ссылку в UserDefaults
+                                    let userDefaults = UserDefaults.standard
+                                    userDefaults.set(requestURLString, forKey: "VKWallRequestURL")
+                                    userDefaults.synchronize()
+                                    print("Сохранено в UserDefaults нужная ссылка для получения новостей со стены:  \(String(describing: requestURL))")
                                 } else {
-                                    print("Не удалось сформировать ссылку.")
+                                    print("Не удалось сформировать ссылку для стены.")
                                 }
-                            } else {
-                                print("Токен отсутствует.")
                             }
-                           } catch {
-                               print("Failed to fetch user info: \(error.localizedDescription)")
-                           }
+                        } catch {
+                            print("Failed to fetch user info: \(error.localizedDescription)")
+                        }
                     }
                 }
             }
-        }else {
+        } else {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
             print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии2.0")
         }

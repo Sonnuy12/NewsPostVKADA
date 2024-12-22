@@ -247,7 +247,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - UISearchBarDelegate
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
+//        presenter.searchFavorites(by: searchText)
         presenter.filterNews(searchText) // Обновляем данные при изменении текста
     }
     

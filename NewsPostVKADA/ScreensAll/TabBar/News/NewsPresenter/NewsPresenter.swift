@@ -23,6 +23,7 @@ protocol NewsPresenterProtocol: AnyObject {
     func logOut()
     func configureVKID(vkid: VKID)
 
+   
 }
 class NewsPresenter: NewsPresenterProtocol {
     
@@ -184,50 +185,4 @@ class NewsPresenter: NewsPresenterProtocol {
         }
     }
 }
-//    func logOut() {
-//        guard let vkid = vkid else {
-//            print("VKID не инициализирован")
-//            return
-//        }
-//        
-//        // Используем вашу функцию logout
-//        logout(vkid: vkid) { result in
-//            switch result {
-//            case .success:
-//                print("Выход успешно выполнен через презентер")
-//                CoreDataManager.shared.deleteUserDetails()
-//                // Отправляем уведомление об успешном выходе
-//                NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
-//            case .failure(let error):
-//                print("Ошибка при выходе через презентер: \(error.localizedDescription)")
-//            }
-//        }
-//        
-//        
-//    }
-//    
-//    // Ваша функция logout остается без изменений
-//    private func logout(vkid: VKID, completion: @escaping (Result<Void, Error>) -> Void) {
-//        let session: UserSession? = vkid.currentAuthorizedSession
-//        session?.logout { result in
-//            switch result {
-//            case .success:
-//                print("Выход выполнен успешно")
-//                // Очистка данных из UserDefaults
-//                let userDefaults = UserDefaults.standard
-//                userDefaults.removeObject(forKey: "UserFirstName")
-//                userDefaults.removeObject(forKey: "UserLastName")
-//                userDefaults.removeObject(forKey: "UserAvatarURL")
-//                
-//                // Синхронизируем изменения
-//                userDefaults.synchronize()
-//                print("Данные пользователя удалены из UserDefaults")
-//                completion(.success(()))
-//            case .failure(let error):
-//                print("Ошибка при выходе: \(error.localizedDescription)")
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-
 

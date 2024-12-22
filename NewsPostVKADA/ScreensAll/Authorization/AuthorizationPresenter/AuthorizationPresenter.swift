@@ -53,6 +53,8 @@ class AuthorizationPresenter: AuthorizationPresenterProtocol {
     private func handleAuthResult(_ authResult: Result<UserSession, AuthError>) {
         switch authResult {
         case .success(let session):
+            print("Авторизация успешна! Token: \(session.accessToken), User ID: \(String(describing: session.idToken))")
+                      NotificationCenter.default.post(name: Notification.Name(rawValue: "setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
             print("Аутентификация прошла успешно! Токен: \(session.accessToken), ID пользователя: \(String(describing: session.idToken))")
             // Запрос разрешений здесь, если это нужно
             self.fetchUserData()

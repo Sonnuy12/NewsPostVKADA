@@ -47,8 +47,6 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         presenter?.fetchVKNews()
         setupNavigationBar()
         setupConstaints()
-        
-        
 
     }
     

@@ -18,6 +18,8 @@ protocol ErrorNilVkPresenterProtocol: AnyObject {
     
     //func fetchNewsFeed()
     
+    func GettingWallLink()
+    
 }
 
 class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
@@ -81,6 +83,15 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
             case .failure(let error):
                 print("Ошибка при выходе через презентер: \(error.localizedDescription)")
             }
+        }
+    }
+    //получение ссылки на стену
+    func GettingWallLink() {
+        let userDefaults = UserDefaults.standard
+        if let requestURLString = userDefaults.string(forKey: "VKWallRequestURL") {
+            print("Полученная ссылка: \(requestURLString)")
+        } else {
+            print("Ссылка не найдена в UserDefaults.")
         }
     }
 }

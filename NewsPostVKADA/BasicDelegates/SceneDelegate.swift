@@ -26,6 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Получаем vkid из AppDelegate
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             self.vkid = appDelegate.vkid
+            
         }
         NotificationCenter.default.addObserver(self, selector: #selector(transition(nt: )), name: Notification.Name("setVC"), object: nil)
         
@@ -42,7 +43,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let sessions1: UserSession? = vkid.currentAuthorizedSession
         
         var token = vkid.currentAuthorizedSession?.accessToken
-        
+    
         if !sessions.isEmpty {
             for result in sessions {
                 if sessions.contains(where: { $0.idToken == result.idToken }) {

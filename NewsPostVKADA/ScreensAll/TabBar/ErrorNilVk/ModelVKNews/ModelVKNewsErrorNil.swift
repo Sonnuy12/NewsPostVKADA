@@ -23,8 +23,6 @@ struct ModelVKNewsErrorNil {
     }
 }
 
-
-
 // Полный ответ API
 struct VKNewsResponse: Decodable {
     let response: VKNewsResponseBody

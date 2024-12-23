@@ -10,6 +10,7 @@ import VKID
 
 protocol ErrorNilVkViewProtocol: AnyObject {
     func updateVKNews(_ news: [ModelVKNewsErrorNil])
+    func updateUI(with news: [ModelVKNewsErrorNil])
     func showError(_ message: String)
     func showAlert()
 }
@@ -66,8 +67,10 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         view.backgroundColor = .newLightGrey
         NavigationBarManager.configureNavigationBar(for: self, withAction: #selector(actionButtonTapped))
         view.addSubViews(newsLabel, VkNewsCollection, scrollToTopButton)
+        //presenter.
         presenter?.fetchVKWallPublic()
         setupConstaints()
+        myUpdate()
     }
     
     private func setupConstaints() {
@@ -93,6 +96,18 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
     func updateVKNews(_ news: [ModelVKNewsErrorNil]) {
         presenter?.VKNewsList = news
         VkNewsCollection.reloadData()
+    }
+    func updateUI(with news: [ModelVKNewsErrorNil]) {
+        if news.isEmpty {
+            print("Нет новостей для отображения")
+        } else {
+            print("Новости для отображения: \(news)")
+            VkNewsCollection.reloadData()
+        }
+    }
+    func myUpdate() {
+        VkNewsCollection.reloadData()
+        print("выполнил myUpdate myUpdate myUpdate")
     }
     
     func showError(_ message: String) {
@@ -137,8 +152,10 @@ extension ErrorNilVkView: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomVKNewsCell.reuseId, for: indexPath) as! CustomVKNewsCell
         let news = presenter.VKNewsList[indexPath.item]
+        print("Создание ячейки для элемента \(indexPath.row)")
         cell.configure(with: news)
         return cell
     }
@@ -148,5 +165,22 @@ extension ErrorNilVkView: UICollectionViewDelegate, UICollectionViewDataSource {
         print("Выбранная новость: \(selectedNews)")
     }
 }
+//extension ErrorNilVkView: UICollectionViewDelegate, UICollectionViewDataSource {
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        return presenter.VKNewsList.count
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomVKNewsCell.reuseId, for: indexPath) as! CustomVKNewsCell
+//        let news = presenter.VKNewsList[indexPath.item]
+//        cell.configure(with: news)
+//        return cell
+//    }
+//
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let selectedNews = presenter.VKNewsList[indexPath.item]
+//        print("Выбранная новость: \(selectedNews)")
+//    }
+//}
 
 

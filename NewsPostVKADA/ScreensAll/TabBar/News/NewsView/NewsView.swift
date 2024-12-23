@@ -14,11 +14,11 @@ protocol NewsViewProtocol: AnyObject {
     func reloadData()
     func showAlert()
     func stopRefreshing()
-
+    
 }
 
-class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
-  
+class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate, UIScrollViewDelegate {
+    
     // MARK: - Properties
     var presenter: NewsPresenterProtocol!
     var vkid: VKID!
@@ -29,7 +29,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
-
+        
         $0.delegate = self
         $0.dataSource = self
         $0.backgroundColor = .white
@@ -68,21 +68,37 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         $0.backgroundColor = .white
         return $0
     }(UILabel())
-
+    
+    // кнопочка вверх
+    lazy var scrollToTopButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("↑", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 24, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .newMediumGrey
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.isHidden = true
+        button.addTarget(self, action: #selector(scrollToTop), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .newLightGrey
         NavigationBarManager.configureNavigationBar(for: self, withAction: #selector(actionButtonTapped))
-        view.addSubViews(searchBar, newsCollection, newsLabel)
+        view.addSubViews(searchBar, newsCollection, newsLabel, scrollToTopButton)
         presenter.loadInitialNews()
         presenter?.loadData()
         setupConstaints()
-       
+        //setupScrollToTopButtonConstraints()
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
     }
     
     private func setupConstaints() {
@@ -98,12 +114,22 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             newsLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
             newsLabel.heightAnchor.constraint(equalToConstant: 70),
             
+            scrollToTopButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.maxX / 2 - 30),
+            scrollToTopButton.topAnchor.constraint(equalTo: newsLabel.bottomAnchor, constant: 10),
+            scrollToTopButton.widthAnchor.constraint(equalToConstant: 60),
+            scrollToTopButton.heightAnchor.constraint(equalToConstant: 20),
             //Коллекция
             newsCollection.topAnchor.constraint(equalTo: newsLabel.bottomAnchor),
             newsCollection.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             newsCollection.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             newsCollection.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+    }
+    
+    // MARK: - UIScrollViewDelegate
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let shouldShowButton = scrollView.contentOffset.y > 470
+        scrollToTopButton.isHidden = !shouldShowButton
     }
     func updateNewsList(_ news: [NewsArticle]) {
         presenter?.newsList = news
@@ -124,7 +150,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         )
     }
     
-// MARK: - UISearchBarDelegate
+    // MARK: - UISearchBarDelegate
     @objc func actionButtonTapped() {
         print("Кнопка нажата")
         presenter.handleActionButtonTap()
@@ -133,7 +159,10 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     @objc private func refreshData() {
         newsCollection.refreshControl?.endRefreshing() // Вызываем метод для получения новых данных
     }
-    
+    // кнопочка вверх
+    @objc private func scrollToTop() {
+        newsCollection.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+    }
     
     // MARK: - UISearchBarDelegate
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -184,3 +213,4 @@ extension NewsView {
         newsCollection.refreshControl?.endRefreshing()
     }
 }
+

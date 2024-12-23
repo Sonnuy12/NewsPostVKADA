@@ -46,13 +46,26 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         return $0
     }(UILabel())
     
+    lazy var scrollToTopButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("↑", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 24, weight: .bold)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .newMediumGrey
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.isHidden = true
+        button.addTarget(self, action: #selector(scrollToTop), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .newLightGrey
         NavigationBarManager.configureNavigationBar(for: self, withAction: #selector(actionButtonTapped))
-        view.addSubview(newsLabel)
-        view.addSubview(VkNewsCollection)
+        view.addSubViews(newsLabel, VkNewsCollection, scrollToTopButton)
         presenter?.fetchVKNews()
         setupConstaints()
     }
@@ -63,6 +76,11 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
             newsLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 110),
             newsLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
             newsLabel.heightAnchor.constraint(equalToConstant: 70),
+            
+            scrollToTopButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: view.frame.maxX / 2 - 30),
+            scrollToTopButton.topAnchor.constraint(equalTo: newsLabel.bottomAnchor, constant: 10),
+            scrollToTopButton.widthAnchor.constraint(equalToConstant: 60),
+            scrollToTopButton.heightAnchor.constraint(equalToConstant: 20),
             
             // Коллекция под лейблом
             VkNewsCollection.topAnchor.constraint(equalTo: newsLabel.bottomAnchor),
@@ -97,9 +115,19 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         )
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let shouldShowButton = scrollView.contentOffset.y > 470
+        scrollToTopButton.isHidden = !shouldShowButton
+    }
+    
     @objc func actionButtonTapped() {
         print("Кнопка нажата")
         presenter.handleActionButtonTap()
+    }
+    
+    // кнопочка вверх
+    @objc private func scrollToTop() {
+        VkNewsCollection.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
 }
 // MARK: - extension для коллекции

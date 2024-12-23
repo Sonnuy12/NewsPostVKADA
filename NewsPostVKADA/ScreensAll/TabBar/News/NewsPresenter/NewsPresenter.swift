@@ -35,11 +35,10 @@ class NewsPresenter: NewsPresenterProtocol {
     var nameUser: String = "пустота"
     
     weak var view: NewsViewProtocol?
-    private var model: NewsModelProtocol
+ 
     
-    init(view: NewsViewProtocol, model: NewsModelProtocol) {
+    init(view: NewsViewProtocol) {
         self.view = view
-        self.model = model
     }
     // MARK: - Func
     
@@ -49,7 +48,7 @@ class NewsPresenter: NewsPresenterProtocol {
     }
     
     func loadData() {
-        //        let news = model.fetchNews()
+       
         view?.updateNewsList(newsList)
     }
     
@@ -63,7 +62,7 @@ class NewsPresenter: NewsPresenterProtocol {
                 case .success(let articles):
                     // Обрабатываем успешно загруженные данные
                     self?.newsList = articles
-                    self?.filteredNews = articles
+                   // self?.filteredNews = articles
                     self?.view?.reloadData() // Обновляем интерфейс
                 case .failure(let error):
                     // Обрабатываем ошибку

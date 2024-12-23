@@ -91,8 +91,9 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         setupElements()
         setupConstraints()
         addGradientToImageView()
+        navigationController?.navigationBar.tintColor = .black
+        
     }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         gradientLayer.frame = mainImage.bounds

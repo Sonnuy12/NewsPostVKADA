@@ -31,7 +31,8 @@ class Builder {
     static func CreateErrorNilVkView(vkid: VKID) -> UIViewController {
         let view = ErrorNilVkView()
         let vkApiService = VKApiService()
-        let presenter = ErrorNilVkPresenter(view: view, apiService: vkApiService)
+        let vkWallServicePublic = VKWallServicePublic() 
+        let presenter = ErrorNilVkPresenter(view: view, apiService: vkApiService, vkWallServicePublic: vkWallServicePublic)
         presenter.configureVKID(vkid: vkid)
         view.presenter = presenter
         return view

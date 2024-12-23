@@ -8,11 +8,11 @@
 import Foundation
 // MARK: - в этом классе будет находится отработка запросов VK API
 protocol VKApiServiceProtocol {
-    func fetchNews(completion: @escaping (Result<[ModelVKNews], Error>) -> Void)
+    func fetchNews(completion: @escaping (Result<[ModelVKNewsErrorNil], Error>) -> Void)
 }
 
 class VKApiService: VKApiServiceProtocol {
-    func fetchNews(completion: @escaping (Result<[ModelVKNews], Error>) -> Void) {
+    func fetchNews(completion: @escaping (Result<[ModelVKNewsErrorNil], Error>) -> Void) {
 //        let urlString = "https://example.com/vknews" // Укажите ваш URL
 //        guard let url = URL(string: urlString) else {
 //            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))

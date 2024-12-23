@@ -17,6 +17,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var userLastName: String?
     var userAvatarImage: URL?
     
+    private let vkWallServicePublic = VKWallServicePublic()
+    private let vkUserService = VKUserService()
+    
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
@@ -39,96 +42,49 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Настройка окна
         self.window = UIWindow(windowScene: scene)
-        var sessions: [UserSession] = vkid.authorizedSessions
-        let sessions1: UserSession? = vkid.currentAuthorizedSession
-        
-        var token = vkid.currentAuthorizedSession?.accessToken
+        let sessions: [UserSession] = vkid.authorizedSessions
+        let _: UserSession? = vkid.currentAuthorizedSession
+        _ = vkid.currentAuthorizedSession?.accessToken
         
         if !sessions.isEmpty {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
             print("Авторизация прошла успешно, переходим на TabBarController")
-            for result in sessions {
-                if sessions.contains(where: { $0.idToken == result.idToken }) {
-                    print("ЭТО ТО ЧТО НУЖНО: \(session)")
-                    NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
-                    print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии")
-                    print("ТОТ САМЫЙ SESSIONS: \(sessions1) дададададад")
-                    print("ТОТ САМЫЙ ТОКЕН : \(String(describing: token)) ВСЁ")
+            for _ in sessions {
+                // все что выше нужно для получения ссылки на сообщество
+                if let token = vkid.currentAuthorizedSession?.accessToken.value {
+                    let communityId = "-222251367"
+                    let postCount = 10
                     
-                    if let token = vkid.currentAuthorizedSession?.accessToken.value {
-                        print("Это личный токен пользователя: \(token)")
-                    }
-                    vkid.currentAuthorizedSession?.fetchUser { result in
-                        do {
-                            let user = try result.get()
-                            CoreDataManager.shared.addUserData(
-                                firstName: user.firstName ?? "nil",
-                                lastName: user.lastName ?? "nil",
-                                avatarURL: user.avatarURL?.absoluteString
-                            )
-                            
-                            let userDefaults = UserDefaults.standard
-                            userDefaults.set(user.firstName, forKey: "UserFirstName")
-                            userDefaults.set(user.lastName, forKey: "UserLastName")
-                            userDefaults.set(user.avatarURL?.absoluteString, forKey: "UserAvatarURL")
-                            
-                            // Сохраняем токен в UserDefaults
-                            if let token = vkid.currentAuthorizedSession?.accessToken.value {
-                                userDefaults.set(token, forKey: "vkToken")
-                                print("Токен сохранен: \(token)")
-                            } else {
-                                print("Не удалось получить токен.")
+                    if let requestURL = vkWallServicePublic.createWallRequestURL(token: token, ownerId: communityId, count: postCount) {
+                        print("Ссылка для запроса стены сообщества: \(requestURL)")
+                        
+                        // Сохраняем ссылку в UserDefaults
+                        UserDefaults.standard.set(requestURL.absoluteString, forKey: "VKWallRequestURLPublic")
+                        
+                        // Выполняем запрос
+                        vkWallServicePublic.performWallRequest(with: requestURL) { result in
+                            switch result {
+                            case .success(let news):
+                                print("Полученные записи: \(news)")
+                            case .failure(let error):
+                                print("Ошибка запроса стены: \(error.localizedDescription)")
                             }
-                            
-                            userDefaults.synchronize()
-                            
-                            print("Сохранено в Core Data и UserDefaults: \(user.firstName ?? "nil") \(user.lastName ?? "nil"), \(String(describing: user.avatarURL))")
-                            
-                            // Используем токен для формирования запроса
-                            if let token = vkid.currentAuthorizedSession?.accessToken.value {
-                                print("Это личный токен пользователя: \(token)")
-                                
-                                // Формирование запроса для получения стены пользователя
-                                let parameters = [
-                                    "count": "10"  // Количество записей на стене
-                                ]
-                                
-                                func createVKAPIRequestURL(token: String, method: String, parameters: [String: String]) -> URL? {
-                                    var urlComponents = URLComponents()
-                                    urlComponents.scheme = "https"
-                                    urlComponents.host = "api.vk.com"
-                                    urlComponents.path = "/method/\(method)"
-                                    
-                                    var queryItems = [
-                                        URLQueryItem(name: "access_token", value: token), // Сохраняем только один токен
-                                        URLQueryItem(name: "v", value: "5.131") // Версия API
-                                    ]
-                                    
-                                    parameters.forEach { key, value in
-                                        queryItems.append(URLQueryItem(name: key, value: value))
-                                    }
-                                    
-                                    urlComponents.queryItems = queryItems
-                                    return urlComponents.url
-                                }
-                                
-                                // Запрос стены пользователя
-                                if let requestURL = createVKAPIRequestURL(token: token, method: "wall.get", parameters: parameters) {
-                                    let requestURLString = requestURL.absoluteString
-                                    print("Сформированная ссылка для стены: \(requestURL)")
-                                    
-                                    // Сохраняем ссылку в UserDefaults
-                                    let userDefaults = UserDefaults.standard
-                                    userDefaults.set(requestURLString, forKey: "VKWallRequestURL")
-                                    userDefaults.synchronize()
-                                    print("Сохранено в UserDefaults нужная ссылка для получения новостей со стены:  \(String(describing: requestURL))")
-                                } else {
-                                    print("Не удалось сформировать ссылку для стены.")
-                                }
-                            }
-                        } catch {
-                            print("Failed to fetch user info: \(error.localizedDescription)")
                         }
+                    } else {
+                        print("Не удалось сформировать ссылку для запроса стены.")
+                    }
+                }
+                
+                
+                if let token = vkid.currentAuthorizedSession?.accessToken.value {
+                    print("Это личный токен пользователя: \(token)")
+                }
+                vkUserService.fetchAndSaveUserData(vkid: vkid) { result in
+                    switch result {
+                    case .success():
+                        print("Данные пользователя успешно сохранены.")
+                    case .failure(let error):
+                        print("Ошибка при получении и сохранении данных пользователя: \(error.localizedDescription)")
                     }
                 }
             }

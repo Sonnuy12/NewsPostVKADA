@@ -31,7 +31,8 @@ final class LogoutManager {
                 userDefaults.removeObject(forKey: "UserFirstName")
                 userDefaults.removeObject(forKey: "UserLastName")
                 userDefaults.removeObject(forKey: "UserAvatarURL")
-                userDefaults.removeObject(forKey: "VKWallRequestURL")
+                userDefaults.removeObject(forKey: "VKUserWallRequestURL")
+                userDefaults.removeObject(forKey: "VKWallRequestURLPublic")
                 
                 // Синхронизируем изменения
                 userDefaults.synchronize()

@@ -2,116 +2,83 @@
 //  CustomVKNewsCell.swift
 //  NewsPostVKADA
 //
-//  Created by Дима Люфт on 12.12.2024.
+//  Created by сонный on 23.12.2024.
 //
 
 import UIKit
 
-class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
-    //MARK: - property
-    static var reuseId: String = "CustomVKNewsCell"
+
+class CustomVKNewsCell: UICollectionViewCell {
+    static let reuseId = "CustomVKNewsCell"
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .bold)
+        label.numberOfLines = 2
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
+    private lazy var descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.numberOfLines = 3
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var newsImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 10
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupItemsInContentViews()
-        
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(descriptionLabel)
+        contentView.addSubview(newsImageView)
+
+        NSLayoutConstraint.activate([
+            newsImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            newsImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            newsImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            newsImageView.heightAnchor.constraint(equalToConstant: 150),
+            
+            titleLabel.topAnchor.constraint(equalTo: newsImageView.bottomAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+        ])
     }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    lazy var VKnewsImage: UIImageView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.contentMode = .scaleAspectFill
-        $0.layer.cornerRadius = 20
-        $0.clipsToBounds = true
-        return $0
-    }(UIImageView())
-    
-    lazy var HstackSiteData: UIStackView = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.axis = .horizontal
-        $0.alignment = .leading
-        $0.distribution = .fillEqually
-        $0.spacing = 15
-        $0.addArrangedSubview(VKwebsiteLabel)
-        $0.addArrangedSubview(datePublication)
-        return $0
-    }(UIStackView())
-    
-    lazy var VKwebsiteLabel: UILabel = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.numberOfLines = 0
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
-        $0.textColor = .black
-        return $0
-    }(UILabel())
-    
-    lazy var datePublication: UILabel = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.numberOfLines = 0
-        $0.font = .systemFont(ofSize: 14, weight: .medium)
-        $0.textColor = .newMediumGrey
-        return $0
-    }(UILabel())
-    
-    lazy var mainLabel: UILabel = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.font = .systemFont(ofSize: 20, weight: .bold)
-        $0.numberOfLines = 0
-        $0.textColor = .black
-        return $0
-    }(UILabel())
-    
-    lazy var descriptionLabel: UILabel = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.font = .systemFont(ofSize: 16, weight: .regular)
-        $0.numberOfLines = 0
-        $0.textColor = .black
-        return $0
-    }(UILabel())
-    
-    
-    //MARK: - func
-    private func setupItemsInContentViews() {
-        contentView.backgroundColor = .newLightGrey
-        contentView.layer.cornerRadius = 20
-        contentView.addSubViews(VKnewsImage,HstackSiteData,mainLabel,descriptionLabel)
-        setupConstraints()
+
+    func configure(with news: ModelVKNewsErrorNil) {
+        titleLabel.text = news.title
+        descriptionLabel.text = news.description
+        if let url = URL(string: news.imageUrl ?? "f") {
+            // Используем URL для загрузки изображения
+            loadImage(from: url)
+        }
     }
-    
-    func configure(with news: ModelVKNews ) {
-        mainLabel.text = news.title
-        descriptionLabel.text = news.descriptionText
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        VKnewsImage.image = UIImage(named: news.imageURL ?? "No Image")
-        
-    }
-    
-    func setupConstraints() {
-        NSLayoutConstraint.activate([
-            
-            VKnewsImage.topAnchor.constraint(equalTo: contentView.topAnchor),
-            VKnewsImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            VKnewsImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            VKnewsImage.heightAnchor.constraint(equalToConstant: 260),
-            
-            HstackSiteData.topAnchor.constraint(equalTo: VKnewsImage.bottomAnchor, constant: 10),
-            HstackSiteData.leadingAnchor.constraint(equalTo: VKnewsImage.leadingAnchor, constant: 15),
-            HstackSiteData.trailingAnchor.constraint(equalTo: VKnewsImage.trailingAnchor, constant: -15),
-            HstackSiteData.heightAnchor.constraint(equalToConstant: 20),
-            
-            mainLabel.topAnchor.constraint(equalTo: HstackSiteData.bottomAnchor, constant: 20),
-            mainLabel.leadingAnchor.constraint(equalTo: VKnewsImage.leadingAnchor),
-            mainLabel.trailingAnchor.constraint(equalTo: VKnewsImage.trailingAnchor),
-            
-            descriptionLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 20),
-            descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
-            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
-            
-        ])
+
+    private func loadImage(from url: URL) {
+        DispatchQueue.global().async {
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.newsImageView.image = image
+                }
+            }
+        }
     }
 }
-

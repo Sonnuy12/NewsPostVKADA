@@ -15,7 +15,7 @@ protocol SecondNewsPresenterProtocol: AnyObject {
 class SecondNewsPresenter:SecondNewsPresenterProtocol {
     
     var newsData: NewsArticle
-   
+    
     weak var view: SecondNewsViewProtocol?
     init(view: SecondNewsViewProtocol, newsData: NewsArticle) {
         self.view = view
@@ -23,16 +23,16 @@ class SecondNewsPresenter:SecondNewsPresenterProtocol {
     }
     
     // Возвращаем URL сайта
-       func getWebsiteURL() -> URL? {
-           return URL(string: newsData.url)
-       }
-
-       // Обрабатываем нажатие кнопки
-       func viewDidTapOpenWebsite() {
-           guard let url = getWebsiteURL() else {
-               view?.showError("Некорректный URL сайта")
-               return
-           }
-           view?.openWebsite(url: url)
-       }
+    func getWebsiteURL() -> URL? {
+        return URL(string: newsData.url)
+    }
+    
+    // Обрабатываем нажатие кнопки
+    func viewDidTapOpenWebsite() {
+        guard let url = getWebsiteURL() else {
+            view?.showError("Некорректный URL сайта")
+            return
+        }
+        view?.openWebsite(url: url)
+    }
 }

@@ -13,7 +13,7 @@ protocol SecondNewsViewProtocol: AnyObject {
 }
 
 class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
- 
+    
     var presenter: SecondNewsPresenterProtocol!
     
     lazy var scroll: UIScrollView = {
@@ -48,7 +48,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         $0.addArrangedSubview(datePublication)
         return $0
     }(UIStackView())
-   
+    
     lazy var datePublication: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.numberOfLines = 0
@@ -76,7 +76,7 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         $0.layer.cornerRadius = 30
         return $0
     }(UIButton(primaryAction: goToSiteAction))
-
+    
     lazy var goToSiteAction: UIAction = UIAction { [weak self] transition in
         self?.presenter.viewDidTapOpenWebsite()
     }
@@ -105,12 +105,12 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
         datePublication.text = presenter.newsData.publishedAt.toReadableDate()
         guard let url = URL(string: presenter.newsData.urlToImage ?? "") else { return }
         mainImage.sd_setImage(with: url)
-       
+        
         
     }
-
+    
     private func setupConstraints() {
-       
+        
         NSLayoutConstraint.activate([
             
             scroll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -129,11 +129,11 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
             mainImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             mainImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             mainImage.heightAnchor.constraint(equalTo: mainImage.widthAnchor, multiplier: mainImage.image?.getRation() ?? 1),
-           
+            
             HstackSiteData.topAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: -40),
             HstackSiteData.leadingAnchor.constraint(equalTo: mainImage.leadingAnchor, constant: 15),
             HstackSiteData.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor, constant: -15),
-           
+            
             
             mainLabel.topAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: 10),
             mainLabel.leadingAnchor.constraint(equalTo: mainImage.leadingAnchor, constant: 10),
@@ -143,41 +143,41 @@ class SecondNewsView: UIViewController ,SecondNewsViewProtocol {
             descriptionLabel.leadingAnchor.constraint(equalTo: mainLabel.leadingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: mainLabel.trailingAnchor),
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant:  -100),
-         
             
-           // goToSiteButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 80),
+            
+            // goToSiteButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 80),
             goToSiteButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             goToSiteButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             goToSiteButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
-           
+            
         ])
     }
     
     private func addGradientToImageView() {
-           // Создаём слой градиента
+        // Создаём слой градиента
         gradientLayer.frame = mainImage.bounds
-
+        
         // Устанавливаем цвета градиента (например, от прозрачного к чёрному)
         gradientLayer.colors = [
             UIColor.clear.cgColor,   // Прозрачный
             UIColor.black.cgColor    // Чёрный
         ]
         // Устанавливаем точки начала и конца градиента
-     gradientLayer.locations = [0.5, 1.0]
+        gradientLayer.locations = [0.5, 1.0]
         // Добавляем слой градиента в `imageView`
-     mainImage.layer.insertSublayer(gradientLayer, at: 0)
-       }
-   
+        mainImage.layer.insertSublayer(gradientLayer, at: 0)
+    }
+    
     func showError(_ message: String) {
-            let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
+        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
     
     // Реализация протокола `NewsViewProtocol`
-        func openWebsite(url: URL) {
-            UIApplication.shared.open(url)
-        }
+    func openWebsite(url: URL) {
+        UIApplication.shared.open(url)
+    }
 }
 extension UIImage {
     func getRation() -> CGFloat? {

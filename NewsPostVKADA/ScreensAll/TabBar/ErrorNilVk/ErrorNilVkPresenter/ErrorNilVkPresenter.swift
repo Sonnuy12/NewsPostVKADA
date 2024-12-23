@@ -16,10 +16,7 @@ protocol ErrorNilVkPresenterProtocol: AnyObject {
     func handleActionButtonTap()
     func logOut()
     
-    //func fetchNewsFeed()
-    
     func GettingWallLink()
-    
 }
 
 class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
@@ -36,16 +33,17 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
         self.apiService = apiService
     }
     // MARK: - Func
-
+    
     // Структуры для парсинга ответа
     struct NewsFeedResponse: Codable {
         let response: NewsFeedData
     }
-
+    
     struct NewsFeedData: Codable {
         let items: [NewsFeedItem]
     }
-
+    
+    
     struct NewsFeedItem: Codable {
         let id: Int
         let text: String
@@ -75,7 +73,7 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
     }
     
     func logOut() {
-        LogoutService.shared.logOut(vkid: vkid) { result in
+        LogoutManager.shared.logOut(vkid: vkid) { result in
             switch result {
             case .success:
                 print("Выход успешно выполнен через презентер")

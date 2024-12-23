@@ -43,10 +43,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let sessions1: UserSession? = vkid.currentAuthorizedSession
         
         var token = vkid.currentAuthorizedSession?.accessToken
-    
+        
         if !sessions.isEmpty {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.tabBar])
-                    print("Авторизация прошла успешно, переходим на TabBarController")
+            print("Авторизация прошла успешно, переходим на TabBarController")
             for result in sessions {
                 if sessions.contains(where: { $0.idToken == result.idToken }) {
                     print("ЭТО ТО ЧТО НУЖНО: \(session)")
@@ -92,7 +92,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                                 let parameters = [
                                     "count": "10"  // Количество записей на стене
                                 ]
-
+                                
                                 func createVKAPIRequestURL(token: String, method: String, parameters: [String: String]) -> URL? {
                                     var urlComponents = URLComponents()
                                     urlComponents.scheme = "https"
@@ -132,7 +132,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                 }
             }
-           
+            
         } else {
             NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])
             print("ТОТ САМЫЙ SESSIONS: \(sessions) блямблии2.0")

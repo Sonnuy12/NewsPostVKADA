@@ -5,45 +5,6 @@
 //  Created by сонный on 09.12.2024.
 //
 
-//import Foundation
-//
-//protocol FavoritesStoragePresenterProtocol: AnyObject {
-////    var savedNews: [NewsEntity] {get set}
-//    func removeNews(_ news: NewsEntity)
-//    func fetchSavedNews()
-//}
-//
-//class FavoritesStoragePresenter: FavoritesStoragePresenterProtocol {
-//
-//// MARK: - Properties
-////    var savedNews: [NewsEntity] = []
-//    private var favorites: [NewsEntity] = []
-//    private let coreDataManager = CoreDataManager.shared
-//    weak var view: FavoritesStorageViewProtocol?
-//    
-//    init(view: FavoritesStorageViewProtocol) {
-//        self.view = view
-//
-//    }
-//// MARK: - Func
-//    func fetchSavedNews() {
-//        favorites = coreDataManager.fetchNews()
-//        view?.displaySavedNews(favorites)
-//        }
-//        
-//// MARK: - Add News
-//    func addNews(_ news: NewsEntity) {
-//            coreDataManager.addNews(news)
-//            fetchSavedNews()
-//        }
-//        
-//// MARK: - Remove News (необходимо подумать над этой функцией, чтобы она удаляла по int)
-//    func removeNews(_ news: NewsEntity) {
-//        coreDataManager.deleteNews(news)
-//            fetchSavedNews()
-//        }
-//}
-
 import Foundation
 import CoreData
 import VKID
@@ -62,31 +23,31 @@ protocol FavoritesStoragePresenterProtocol: AnyObject {
 
 class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NSFetchedResultsControllerDelegate {
     
-// MARK: - Properties
+    // MARK: - Properties
     private weak var view: FavoritesStorageViewProtocol?
     private let coreDataManager: CoreDataManager
     internal var favorites: [NewsEntity] = []
     
     var vkid: VKID!
-
+    
     init(view: FavoritesStorageViewProtocol, coreDataManager: CoreDataManager = .shared) {
         self.view = view
         self.coreDataManager = coreDataManager
     }
-// MARK: - Methods
+    // MARK: - Methods
     func configureVKID(vkid: VKID) {
         self.vkid = vkid
         print("VKID передан в презентер: \(String(describing: self.vkid))")
     }
-
+    
     func loadFavorites() {
         coreDataManager.setupNewsFetchedResultsController(delegate: self)  // Устанавливаем делегат
     }
-
+    
     func deleteFavoriteNews(_ news: NewsEntity) {
         coreDataManager.deleteNews(news)
         loadFavorites()
-       // Обновляем данные после удаления
+        // Обновляем данные после удаления
     }
     //функции для кнопочки выхода
     func handleActionButtonTap() {
@@ -95,7 +56,7 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
     }
     
     func logOut() {
-        LogoutService.shared.logOut(vkid: vkid) { result in
+        LogoutManager.shared.logOut(vkid: vkid) { result in
             switch result {
             case .success:
                 print("Выход успешно выполнен через презентер")
@@ -105,17 +66,7 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
             }
         }
     }
-    //функция для searh, однозанчно требует доработак, после того, как сделаем массив Favorite
-//    func searchFavorites(by title: String) {
-//        if title.isEmpty {
-//            favorites = coreDataManager.getAllNews() ?? []
-//        } else {
-//            favorites = coreDataManager.getAllNews()?.filter {
-//                $0.title?.lowercased().contains(title.lowercased()) ?? false
-//            } ?? []
-//        }
-//        view?.displaySavedNews(favorites) // Обновляем отображение в коллекции
-//    }
+    
     func searchFavorites(by keyword: String) {
         let lowercasedKeyword = keyword.lowercased()
         let filteredNews = favorites.filter { news in

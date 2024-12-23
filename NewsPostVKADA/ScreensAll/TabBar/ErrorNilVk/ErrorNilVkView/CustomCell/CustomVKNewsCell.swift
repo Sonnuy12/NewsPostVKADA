@@ -8,8 +8,17 @@
 import UIKit
 
 class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
-    
+    //MARK: - property
     static var reuseId: String = "CustomVKNewsCell"
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupItemsInContentViews()
+        
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     lazy var VKnewsImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -63,14 +72,7 @@ class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
     }(UILabel())
     
     
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupItemsInContentViews()
-        
-        
-    }
-    
+    //MARK: - func
     private func setupItemsInContentViews() {
         contentView.backgroundColor = .newLightGrey
         contentView.layer.cornerRadius = 20
@@ -81,12 +83,11 @@ class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
     func configure(with news: ModelVKNews ) {
         mainLabel.text = news.title
         descriptionLabel.text = news.descriptionText
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-//        datePublication.text = formatter.string(from: news)
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
         VKnewsImage.image = UIImage(named: news.imageURL ?? "No Image")
-            
-        }
+        
+    }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
@@ -111,10 +112,6 @@ class CustomVKNewsCell: UICollectionViewCell, SetupNewCell {
             descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30),
             
         ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 

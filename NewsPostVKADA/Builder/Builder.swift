@@ -12,13 +12,13 @@ import VKID
 class Builder {
     
     static func CreateAuthorizationView(vkid: VKID) -> UIViewController {
-          let view = AuthorizationView()
-          let presenter = AuthorizationPresenter(view: view)
-          presenter.configureVKID(vkid: vkid) // Передаем VKID в Presenter
-          view.presenter = presenter
-          view.vkid = vkid
-          return view
-      }
+        let view = AuthorizationView()
+        let presenter = AuthorizationPresenter(view: view)
+        presenter.configureVKID(vkid: vkid) // Передаем VKID в Presenter
+        view.presenter = presenter
+        view.vkid = vkid
+        return view
+    }
     
     static func CreateNewsView(vkid: VKID) -> UIViewController {
         let view = NewsView()
@@ -31,13 +31,12 @@ class Builder {
     
     static func CreateErrorNilVkView(vkid: VKID) -> UIViewController {
         let view = ErrorNilVkView()
-        let vkApiService = VKApiService() 
+        let vkApiService = VKApiService()
         let presenter = ErrorNilVkPresenter(view: view, apiService: vkApiService)
         presenter.configureVKID(vkid: vkid)
         view.presenter = presenter
         return view
     }
-    
     
     static func CreateFavoritesStorageView(vkid: VKID) -> UIViewController {
         let view = FavoritesStorageView()

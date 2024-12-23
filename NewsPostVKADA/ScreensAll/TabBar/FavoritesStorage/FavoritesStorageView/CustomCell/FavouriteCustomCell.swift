@@ -101,7 +101,7 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
             FavouriteImage.topAnchor.constraint(equalTo: contentView.topAnchor),
             FavouriteImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             FavouriteImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            FavouriteImage.heightAnchor.constraint(equalToConstant: 260),
+            FavouriteImage.heightAnchor.constraint(equalToConstant: 200),
             
             isFavourite.topAnchor.constraint(equalTo: FavouriteImage.topAnchor, constant: 20),
             isFavourite.trailingAnchor.constraint(equalTo: FavouriteImage.trailingAnchor, constant: -20),

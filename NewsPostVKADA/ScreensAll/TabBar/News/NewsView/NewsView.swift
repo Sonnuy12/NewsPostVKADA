@@ -52,7 +52,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         searchBar.searchTextField.backgroundColor = .systemGray6
         searchBar.searchTextField.leftView?.tintColor = .gray
         searchBar.searchTextField.rightView?.tintColor = .gray
-        searchBar.backgroundColor = .newLightGrey
+        searchBar.backgroundColor = .clear
         searchBar.searchBarStyle = .minimal
         
         return searchBar
@@ -72,119 +72,19 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     // MARK: - Func
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .newLightGrey
+        NavigationBarManager.configureNavigationBar(for: self, withAction: #selector(actionButtonTapped))
         view.addSubViews(searchBar, newsCollection, newsLabel)
         presenter.loadInitialNews()
         presenter?.loadData()
-        setupNavigationBar()
         setupConstaints()
+       
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-       // setupNavigationBar()
-    }
-    private func setupNavigationBar() {
-        view.backgroundColor = .newLightGrey
-        let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        //1)фотка
-        let profileImageView = UIImageView()
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.layer.cornerRadius = 17.5
-        profileImageView.clipsToBounds = true
-        profileImageView.backgroundColor = .systemGray5
-        profileImageView.contentMode = .scaleAspectFill
-        //2)имя
-        let nameLabel = UILabel()
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        nameLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        nameLabel.textColor = .black
-        
-        let userDetails = CoreDataManager.shared.fetchUserDetails()
-       
-        if let user = userDetails.first {
-            // Отображение имени пользователя
-            let fullUserName = "\(user.firstName ?? "Unknown") \(user.lastName ?? "Unknown")"
-            nameLabel.text = fullUserName
-            nameLabel.layoutIfNeeded()
 
-            // Отображение аватара пользователя
-            if let avatarURLString = user.avatar, let avatarURL = URL(string: avatarURLString) {
-                // Загрузка изображения асинхронно
-                URLSession.shared.dataTask(with: avatarURL) { data, response, error in
-                    guard let data = data, error == nil else {
-                        print("Ошибка загрузки изображения: \(String(describing: error))")
-                        return
-                    }
-                    DispatchQueue.main.async {
-                        profileImageView.image = UIImage(data: data)
-                        profileImageView.layoutIfNeeded()
-                    }
-                    //profileImageView.image = UIImage(data: data)
-                }.resume()
-            } else {
-                profileImageView.image = UIImage(systemName: "person.circle") // Изображение по умолчанию
-            }
-        } else {
-            // Действия по умолчанию, если данных в Core Data нет
-            nameLabel.text = "Гость"
-            profileImageView.image = UIImage(systemName: "person.circle")
-        }
-        //3)добавляемя фотку и имя в контейнер
-        containerView.addSubview(profileImageView)
-        containerView.addSubview(nameLabel)
-        //4)настраиваем положнеи фотки и имени
-        NSLayoutConstraint.activate([
-            // Картинка слева
-            profileImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            profileImageView.widthAnchor.constraint(equalToConstant: 35),
-            profileImageView.heightAnchor.constraint(equalToConstant: 35),
-            // Лейбл справа от картинки
-            nameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 8),
-            nameLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            
-        ])
-        //5)устанавливаем контейнер с фоткой и именем в navigationItem.titleView
-        containerView.backgroundColor = .red
-        let barButtonItem = UIBarButtonItem(customView: containerView)
-        self.navigationItem.leftBarButtonItem = barButtonItem
-        
-        //6)создаем кнопочку
-        let actionButton = UIButton(type: .system)
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
-        actionButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-        actionButton.tintColor = .black
-        actionButton.imageView?.contentMode = .scaleAspectFill
-        actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
-        //7)лепим кнопочку вправо
-        let rightBarButton = UIBarButtonItem(customView: actionButton)
-        self.navigationItem.rightBarButtonItem = rightBarButton
-        
-        func updateUserProfile() {
-            let userDetails = CoreDataManager.shared.fetchUserDetails()
-            
-            if let user = userDetails.first {
-                let fullUserName = "\(user.firstName ?? "Unknown") \(user.lastName ?? "Unknown")"
-                nameLabel.text = fullUserName
-
-                if let avatarURLString = user.avatar, let avatarURL = URL(string: avatarURLString) {
-                    URLSession.shared.dataTask(with: avatarURL) { data, response, error in
-                        guard let data = data, error == nil else { return }
-                        DispatchQueue.main.async {
-                            
-                            profileImageView.image = UIImage(data: data)
-                        }
-                    }.resume()
-                    
-                } else {
-                    profileImageView.image = UIImage(systemName: "person.circle")
-                }
-            } else {
-                nameLabel.text = "Гость"
-                profileImageView.image = UIImage(systemName: "person.circle")
-            }
-        }
     }
+    
     private func setupConstaints() {
         NSLayoutConstraint.activate([
             //SearchBar
@@ -194,7 +94,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
             searchBar.heightAnchor.constraint(equalToConstant: 40),
             
             //Лейбл "Новости"
-            newsLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            newsLabel.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10),
             newsLabel.widthAnchor.constraint(equalTo: view.widthAnchor),
             newsLabel.heightAnchor.constraint(equalToConstant: 70),
             
@@ -211,26 +111,17 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
     }
     
     func showAlert() {
-        let alertController = UIAlertController(
+        AlertManager.showAlert(
+            on: self,
             title: "Выйти",
             message: "Вы действительно хотите выйти из аккаунта?",
-            preferredStyle: .alert
+            confirmHandler: { [weak self] in
+                self?.presenter.logOut()
+            },
+            cancelHandler: {
+                print("Отмена нажата")
+            }
         )
-        
-        // Кнопка "ОК"
-        let okAction = UIAlertAction(title: "ОК", style: .default) { _ in
-            self.presenter.logOut()
-        }
-        
-        // Кнопка "Отмена"
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in
-            print("Отмена нажата")
-        }
-        alertController.addAction(okAction)
-        alertController.addAction(cancelAction)
-        
-        // Показать алерт
-        present(alertController, animated: true, completion: nil)
     }
     
 // MARK: - UISearchBarDelegate
@@ -252,11 +143,6 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate {
         presenter.refreshNews(for: query)
         stopRefreshing()
     }
-    
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-////        presenter.searchFavorites(by: searchText)
-//        presenter.filterNews(searchText) // Обновляем данные при изменении текста
-//    }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         presenter.filterNews("") // Сбрасываем фильтр при отмене поиска
@@ -292,7 +178,7 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         navigationController?.pushViewController(secondView.self, animated: true)
     }
 }
-//
+//refresh
 extension NewsView {
     func stopRefreshing() {
         newsCollection.refreshControl?.endRefreshing()

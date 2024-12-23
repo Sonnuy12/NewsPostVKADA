@@ -28,14 +28,14 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
     // MARK: - Properties
     weak var view: ErrorNilVkViewProtocol?
     var VKNewsList: [ModelVKNewsErrorNil] = []
-    var apiService: VKApiServiceProtocol
+    
     var vkid: VKID?
     private let vkWallServicePublic: VKWallServicePublic
     
     
-    init(view: ErrorNilVkViewProtocol, apiService: VKApiServiceProtocol, vkWallServicePublic: VKWallServicePublic) {
+    init(view: ErrorNilVkViewProtocol, vkWallServicePublic: VKWallServicePublic) {
         self.view = view
-        self.apiService = apiService
+        
         self.vkWallServicePublic = vkWallServicePublic
     }
     // MARK: - Func

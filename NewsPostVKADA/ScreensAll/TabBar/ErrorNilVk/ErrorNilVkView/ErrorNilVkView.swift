@@ -170,7 +170,7 @@ extension ErrorNilVkView: UICollectionViewDelegate, UICollectionViewDataSource {
 }
 extension ErrorNilVkView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 200) // Пример
+        return CGSize(width: collectionView.frame.width, height: 400) // Пример
     }
 }
 

@@ -8,8 +8,8 @@
 
 import Foundation
 class VKWallServicePublic {
-    
-    // Метод для формирования URL для запроса стены
+
+    //ссылка
     func createWallRequestURL(token: String, ownerId: String, count: Int = 10) -> URL? {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -26,7 +26,7 @@ class VKWallServicePublic {
         return urlComponents.url
     }
     
-    // Метод для выполнения запроса к стене
+    // запрос
     func performWallRequest(with url: URL, completion: @escaping (Result<[VKResponseItem], Error>) -> Void) {
         let request = URLRequest(url: url)
         

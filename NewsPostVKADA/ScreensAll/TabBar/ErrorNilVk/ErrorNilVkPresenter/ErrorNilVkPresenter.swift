@@ -53,7 +53,7 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
         // Добавьте другие поля в зависимости от нужных данных
     }
     func fetchVKWallPublic() {
-        guard let requestURLString = UserDefaults.standard.string(forKey: "VKWall") else { return }
+        guard let requestURLString = UserDefaults.standard.string(forKey: "VKWallRequestURLPublic") else { return }
         
         let url = URL(string: requestURLString)!
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
@@ -74,6 +74,7 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
                 DispatchQueue.main.async {
                     self?.view?.updateUI(with: news)
                 }
+                print("fetchVKWallPublic")
             } catch {
                 print("Ошибка при парсинге данных: \(error.localizedDescription)")
             }

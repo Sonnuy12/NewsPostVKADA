@@ -128,7 +128,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate, UIScrol
     
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let shouldShowButton = scrollView.contentOffset.y > 470
+        let shouldShowButton = scrollView.contentOffset.y > 460
         scrollToTopButton.isHidden = !shouldShowButton
     }
     func updateNewsList(_ news: [NewsArticle]) {
@@ -184,7 +184,7 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate, UIScrol
 // MARK: - extension для коллекции
 extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("количество новостей: \(presenter.newsList.count)")
+        print("количество новостей из NewsApi: \(presenter.newsList.count)")
         return presenter.newsList.count
     }
     

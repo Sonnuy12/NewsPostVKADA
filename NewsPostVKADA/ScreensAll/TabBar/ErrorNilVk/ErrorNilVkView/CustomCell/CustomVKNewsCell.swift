@@ -187,9 +187,9 @@ class CustomVKNewsCell: UICollectionViewCell {
     }
 
     func configure(with news: ModelVKNewsErrorNil) {
-        titleLabel.text = news.title
-        descriptionLabel.text = news.description
-        if let url = URL(string: news.imageUrl ?? "f") {
+        titleLabel.text = news.title ?? "нет текста в новости "
+        descriptionLabel.text = news.description.description ?? "бля бла бля а не дата "
+        if let url = URL(string: news.imageUrl ?? "риволаиовталовыоатоывтлоатлв") {
             // Используем URL для загрузки изображения
             loadImage(from: url)
         }

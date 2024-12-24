@@ -136,7 +136,7 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let shouldShowButton = scrollView.contentOffset.y > 470
+        let shouldShowButton = scrollView.contentOffset.y > 460
         scrollToTopButton.isHidden = !shouldShowButton
     }
     

@@ -9,7 +9,7 @@ import UIKit
 import VKID
 
 protocol ErrorNilVkViewProtocol: AnyObject {
-    func updateVKNews(_ news: [VKResponseItem])
+//    func updateVKNews(_ news: [VKResponseItem])
     func updateUI(with news: [VKResponseItem])
     func showError(_ message: String)
     func showAlert()
@@ -95,16 +95,16 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
         ])
     }
     
-    func updateVKNews(_ news: [VKResponseItem]) {
-        presenter.VKNewsList = news
-        VkNewsCollection.reloadData()
-    }
+//    func updateVKNews(_ news: [VKResponseItem]) {
+//        presenter.VKNewsList = news
+//        VkNewsCollection.reloadData()
+//    }
 
     func updateUI(with news: [VKResponseItem]) {
         if news.isEmpty {
             print("Нет новостей для отображения")
         } else {
-            updateVKNews(news)
+            presenter.VKNewsList = news
             print("Новости для отображения: \(news)")
             VkNewsCollection.reloadData()
         }

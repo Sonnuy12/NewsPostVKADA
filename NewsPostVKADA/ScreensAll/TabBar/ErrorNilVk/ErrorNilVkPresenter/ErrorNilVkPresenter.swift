@@ -9,7 +9,7 @@ import Foundation
 import VKID
 
 protocol ErrorNilVkPresenterProtocol: AnyObject {
-    var VKNewsList: [ModelVKNewsErrorNil] { get set }
+    var VKNewsList: [VKResponseItem] { get set }
     
     func configureVKID(vkid: VKID)
     func handleActionButtonTap()
@@ -24,7 +24,7 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
     
     // MARK: - Properties
     weak var view: ErrorNilVkViewProtocol?
-    var VKNewsList: [ModelVKNewsErrorNil] = []
+    var VKNewsList: [VKResponseItem] = []
     
     var vkid: VKID?
     private let vkWallServicePublic: VKWallServicePublic
@@ -52,54 +52,34 @@ class ErrorNilVkPresenter: ErrorNilVkPresenterProtocol {
         let text: String
         // Добавьте другие поля в зависимости от нужных данных
     }
+    
     func fetchVKWallPublic() {
-        guard let requestURLString = UserDefaults.standard.string(forKey: "VKWallRequestURLPublic") else { return }
-        
-        let url = URL(string: requestURLString)!
+        guard let requestURLString = UserDefaults.standard.string(forKey: "VKWallRequestURLPublic"),
+              let url = URL(string: requestURLString) else { return }
+
         let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
             guard let data = data else {
                 print("Ошибка при получении данных: \(error?.localizedDescription ?? "Неизвестная ошибка")")
                 return
             }
-            
+
             do {
-                // Парсим ответ от API
                 let decoder = JSONDecoder()
-                let vkNewsResponse = try decoder.decode(VKNewsResponse.self, from: data)
-                
-                // Преобразуем элементы в ModelVKNewsErrorNil
-                let news = vkNewsResponse.response.items.map { ModelVKNewsErrorNil(from: $0) }
-                
-                // Передаем данные во вью (обновление UI происходит в главном потоке)
+                let vkNewsResponse = try decoder.decode(VKObject.self, from: data)
+
+                let newsItems = vkNewsResponse.response.items
+
                 DispatchQueue.main.async {
-                    self?.view?.updateUI(with: news)
+                    self?.view?.updateUI(with: newsItems)
+                    self?.view?.myUpdate()
                 }
-                print("fetchVKWallPublic")
             } catch {
                 print("Ошибка при парсинге данных: \(error.localizedDescription)")
             }
         }
         task.resume()
+       
     }
-    //    func fetchVKWallPublic() {
-    //        // Получаем URL из UserDefaults
-    //        if let requestURLString = UserDefaults.standard.string(forKey: "VKWallRequestURLPublic"),
-    //           let requestURL = URL(string: requestURLString) {
-    //
-    //            // Выполняем запрос с использованием полученного URL
-    //            vkWallServicePublic.performWallRequest(with: requestURL) { result in
-    //                switch result {
-    //                case .success(let news):
-    //                    print("Полученные записи: \(news)")
-    //                case .failure(let error):
-    //                    print("Ошибка запроса стены: \(error.localizedDescription)")
-    //                }
-    //            }
-    //        } else {
-    //            print("Не удалось получить ссылку для запроса стены.")
-    //        }
-    //    }
-    
     func configureVKID(vkid: VKID) {
         self.vkid = vkid
         print("VKID передан в презентер: \(String(describing: self.vkid))")

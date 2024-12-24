@@ -7,7 +7,6 @@
 
 
 import Foundation
-
 class VKWallServicePublic {
     
     // Метод для формирования URL для запроса стены
@@ -28,7 +27,7 @@ class VKWallServicePublic {
     }
     
     // Метод для выполнения запроса к стене
-    func performWallRequest(with url: URL, completion: @escaping (Result<[ModelVKNewsErrorNil], Error>) -> Void) {
+    func performWallRequest(with url: URL, completion: @escaping (Result<[VKResponseItem], Error>) -> Void) {
         let request = URLRequest(url: url)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -43,12 +42,13 @@ class VKWallServicePublic {
             }
             
             do {
-                let decodedResponse = try JSONDecoder().decode(VKNewsResponse.self, from: data)
-                let news = decodedResponse.response.items.map { ModelVKNewsErrorNil(from: $0) }
-                completion(.success(news))
+                let decodedResponse = try JSONDecoder().decode(VKObject.self, from: data)
+                let newsItems = decodedResponse.response.items
+                completion(.success(newsItems))
             } catch {
                 completion(.failure(error))
             }
         }.resume()
     }
 }
+

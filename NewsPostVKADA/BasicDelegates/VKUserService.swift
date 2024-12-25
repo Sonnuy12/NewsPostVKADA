@@ -40,7 +40,7 @@ class VKUserService {
                 
                 userDefaults.synchronize()
                 
-                print("Сохранено в Core Data и UserDefaults: \(user.firstName ?? "nil") \(user.lastName ?? "nil"), \(String(describing: user.avatarURL))")
+                print("Сохранено в UserDefaults: \(user.firstName ?? "nil") \(user.lastName ?? "nil"), \(String(describing: user.avatarURL))")
                 
                 // Вызов для дальнейшего использования токена
                 self.createVKAPIRequestURL(token: vkid.currentAuthorizedSession?.accessToken.value, method: "wall.get", parameters: ["count": "10"]) { url in

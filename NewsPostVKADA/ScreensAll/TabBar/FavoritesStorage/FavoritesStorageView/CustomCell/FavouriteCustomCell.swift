@@ -88,7 +88,7 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     }
     
     func configureElements(items: NewsEntity) {
-        FavouriteImage.image = UIImage(named: items.imageURL)
+        FavouriteImage.image = UIImage(named: items.imageURL ?? "FavouriteImage.image - что-то пошло не так")
         datePublication.text = items.datePublicationPost?.description
         mainLabel.text = items.title
         descriptionLabel.text = items.descriptionText

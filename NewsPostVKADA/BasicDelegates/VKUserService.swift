@@ -17,12 +17,12 @@ class VKUserService {
             do {
                 let user = try result.get()
                 
-                // Сохраняем данные в CoreData
-                CoreDataManager.shared.addUserData(
-                    firstName: user.firstName ?? "nil",
-                    lastName: user.lastName ?? "nil",
-                    avatarURL: user.avatarURL?.absoluteString
-                )
+//                // Сохраняем данные в CoreData
+//                CoreDataManager.shared.addUserData(
+//                    firstName: user.firstName ?? "nil",
+//                    lastName: user.lastName ?? "nil",
+//                    avatarURL: user.avatarURL?.absoluteString
+//                )
                 
                 // Сохраняем данные в UserDefaults
                 let userDefaults = UserDefaults.standard

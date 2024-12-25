@@ -40,7 +40,7 @@ class ErrorNilVkView: UIViewController, ErrorNilVkViewProtocol {
     
     lazy var newsLabel: UILabel = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.text = "  Новости"
+        $0.text = "  Error Nil VK"
         $0.textAlignment = .left
         $0.textColor = .black
         $0.font = .systemFont(ofSize: 34, weight: .bold)

@@ -39,7 +39,7 @@ final class LogoutManager {
                 print("Данные пользователя удалены из UserDefaults")
                 
                 // Удаление пользовательских данных из CoreData
-                CoreDataManager.shared.deleteUserDetails()
+//                CoreDataManager.shared.deleteUserDetails()
                 
                 // Уведомление об успешном выходе
                 NotificationCenter.default.post(name: Notification.Name("setVC"), object: nil, userInfo: ["vc": NotificationEnum.authorization])

@@ -74,13 +74,13 @@ extension CoreDataManager {
         }
     }
     // MARK: - User CRUD Operations
-    func addUserData(firstName: String, lastName: String, avatarURL: String?) {
-        let newUserEntity = NewsEntity(context: context)
-        newUserEntity.userFirstName = firstName
-        newUserEntity.userLastName = lastName
-        newUserEntity.userAvatar = avatarURL
-        saveContext()
-    }
+//    func addUserData(firstName: String, lastName: String, avatarURL: String?) {
+//        let newUserEntity = NewsEntity(context: context)
+//        newUserEntity.userFirstName = firstName
+//        newUserEntity.userLastName = lastName
+//        newUserEntity.userAvatar = avatarURL
+//        saveContext()
+//    }
     
     func fetchUserDetails() -> [(firstName: String?, lastName: String?, avatar: String?)] {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: "NewsEntity")

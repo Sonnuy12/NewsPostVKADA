@@ -26,6 +26,7 @@ class NewsAPIManager {
         ]
         
         guard let url = urlComponents.url else { return }
+        print("НУЖАЯ ССЫЛКА НА API: \(url) ")
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             if let error = error {

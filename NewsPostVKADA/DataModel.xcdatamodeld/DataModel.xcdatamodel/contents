@@ -7,9 +7,6 @@
         <attribute name="imageURL" optional="YES" attributeType="String"/>
         <attribute name="isFavourite" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <attribute name="userAvatar" optional="YES" attributeType="String"/>
-        <attribute name="userFirstName" optional="YES" attributeType="String"/>
-        <attribute name="userLastName" optional="YES" attributeType="String"/>
         <attribute name="website" optional="YES" attributeType="String"/>
     </entity>
 </model>

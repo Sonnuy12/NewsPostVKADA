@@ -28,6 +28,7 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         createBackround()
+        setupAuthorizationLabels()
         presenter?.setupOneTapButton()
     }
     
@@ -39,6 +40,41 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
         self.view.sendSubviewToBack(backgroundImageView)
     }
     
+    func createLabelAvtorization() -> UIStackView {
+        // Создаем первый лейбл
+        let errorLabel = UILabel()
+        errorLabel.text = "Error Nil"
+        errorLabel.font = .systemFont(ofSize: 35, weight: .bold)
+        errorLabel.textColor = .white
+        errorLabel.textAlignment = .left
+        
+        // Создаем второй лейбл
+        let teamLabel = UILabel()
+        teamLabel.text = "Team DA"
+        teamLabel.font = .systemFont(ofSize: 20, weight: .medium)
+        teamLabel.textColor = .white
+        teamLabel.textAlignment = .left
+        
+        // Создаем стек и добавляем лейблы
+        let stackView = UIStackView(arrangedSubviews: [errorLabel, teamLabel])
+        stackView.axis = .vertical
+        stackView.spacing = 0
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+
+        return stackView
+    }
+    func setupAuthorizationLabels() {
+        let authorizationLabels = createLabelAvtorization()
+        authorizationLabels.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(authorizationLabels)
+        
+        NSLayoutConstraint.activate([
+            authorizationLabels.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            authorizationLabels.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            authorizationLabels.heightAnchor.constraint(equalToConstant: 70),
+        ])
+    }
     func setupOneTapButton(_ oneTapView: UIView) {
         oneTapView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(oneTapView)
@@ -49,6 +85,7 @@ class AuthorizationView: UIViewController, AuthorizationViewProtocol {
             oneTapView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             oneTapView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             oneTapView.heightAnchor.constraint(equalToConstant: 56),
+            
         ])
     }
     

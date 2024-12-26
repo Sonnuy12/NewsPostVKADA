@@ -9,8 +9,9 @@ import UIKit
 import VKID
 
 protocol FavoritesStorageViewProtocol: AnyObject {
-    func displaySavedNews(_ news: [NewsEntity])
+    func displaySavedNews(_ news: [NewsArticle])
     func showAlert()
+    var filteredFavorites: [NewsArticle] {get set}
 }
 
 class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISearchBarDelegate, UIScrollViewDelegate {
@@ -19,11 +20,11 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     var vkid: VKID!
     //нужно для поиска, пока не понимаю как работает
     private var isSearchActive: Bool = false
-    private var filteredFavorites: [NewsEntity] = []
+     var filteredFavorites: [NewsArticle] = []
     
     lazy var favouriteCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width - 20, height: view.frame.height - 180)
+        layout.itemSize = CGSize(width: view.frame.width - 20, height: 450)
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
@@ -87,10 +88,17 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
         NavigationBarManager.configureNavigationBar(for: self, withAction: #selector(actionButtonTapped))
         view.addSubViews(favouriteCollection, favouriteLabel, searchBar, scrollToTopButton)
         setupConstaints()
-        presenter.loadFavorites()
+       
     }
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+        presenter.loadFavorites()
+        favouriteCollection.reloadData()
+       }
+
+       
     
-    func displaySavedNews(_ news: [NewsEntity]) {
+    func displaySavedNews(_ news: [NewsArticle]) {
         presenter.favorites = news
         favouriteCollection.reloadData()
     }
@@ -144,7 +152,7 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     
     //функция для рефрешера
     @objc private func refreshData() {
-        presenter.loadFavorites()
+       // presenter.loadFavorites()
         // останавливаю анимацию прямо во view
         favouriteCollection.refreshControl?.endRefreshing()
     }
@@ -162,25 +170,21 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
 
 // MARK: - extension для коллекции
 extension FavoritesStorageView: UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // MARK: - выбор элемента в коллекции, здесь может быть добавлен переход к выбранной новости или ее удаление
-        //Добавил метод для удаления
-        let selectedNews = presenter.favorites[indexPath.item]
-        presenter.deleteFavoriteNews(selectedNews)
-        //
-        favouriteCollection.reloadData()
-        print("Новость удалена: \(selectedNews.title ?? "Без заголовка")")
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return isSearchActive ? filteredFavorites.count : presenter.favorites.count
+        print(filteredFavorites.count)
+        return filteredFavorites.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavouriteCustomCell.reuseId, for: indexPath) as! FavouriteCustomCell
-        let savedNews = isSearchActive ? filteredFavorites[indexPath.item] : presenter.favorites[indexPath.item]
+        let savedNews = filteredFavorites[indexPath.item]
         cell.configureElements(items: savedNews)
+        cell.isFavourite.isSelected = savedNews.isFavorite
+        cell.favoriteButtonAction = { [weak self] in
+            self?.presenter.deleteFavoriteNews(savedNews)
+            print("новость удалена \(savedNews.title)")
+        }
         return cell
     }
 }
@@ -199,7 +203,7 @@ extension FavoritesStorageView {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         isSearchActive = false
         searchBar.text = ""
-        presenter.loadFavorites()
+        //presenter.loadFavorites()
         favouriteCollection.reloadData()
     }
 }

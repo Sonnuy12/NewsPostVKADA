@@ -10,10 +10,9 @@ import CoreData
 import VKID
 
 protocol FavoritesStoragePresenterProtocol: AnyObject {
-    var favorites: [NewsEntity] {get set}
+    var favorites: [NewsArticle] {get set}
     func loadFavorites() // Загрузить список избранных новостей
-    func deleteFavoriteNews(_ news: NewsEntity) // Удалить новость из избранного
-    
+    func deleteFavoriteNews(_ news: NewsArticle) // Удалить новость из избранного
     func configureVKID(vkid: VKID)
     func logOut()
     func handleActionButtonTap()
@@ -26,7 +25,7 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
     // MARK: - Properties
     private weak var view: FavoritesStorageViewProtocol?
     private let coreDataManager: CoreDataManager
-    internal var favorites: [NewsEntity] = []
+    internal var favorites: [NewsArticle] = CoreDataManager.shared.fetchFavorites()
     
     var vkid: VKID!
     
@@ -40,13 +39,14 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
         print("VKID передан в презентер: \(String(describing: self.vkid))")
     }
     
-    func loadFavorites() {
-        coreDataManager.setupNewsFetchedResultsController(delegate: self)  // Устанавливаем делегат
+    func loadFavorites() { // загрузка избранных новостей
+       let newsFavorites = coreDataManager.fetchFavorites()
+        view?.filteredFavorites = newsFavorites
     }
     
-    func deleteFavoriteNews(_ news: NewsEntity) {
+    func deleteFavoriteNews(_ news: NewsArticle) {
         coreDataManager.deleteNews(news)
-        loadFavorites()
+       
         // Обновляем данные после удаления
     }
     //функции для кнопочки выхода
@@ -70,16 +70,16 @@ class FavoritesStoragePresenter: NSObject, FavoritesStoragePresenterProtocol, NS
     func searchFavorites(by keyword: String) {
         let lowercasedKeyword = keyword.lowercased()
         let filteredNews = favorites.filter { news in
-            news.title?.lowercased().contains(lowercasedKeyword) ?? false
+            news.title.lowercased().contains(lowercasedKeyword)
         }
         view?.displaySavedNews(filteredNews)
     }
-    // MARK: - NSFetchedResultsControllerDelegate
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        if let updatedFavorites = coreDataManager.getAllNews() {
-            self.favorites = updatedFavorites
-            view?.displaySavedNews(updatedFavorites)  // Обновляем UI с новыми данными
-        }
-    }
+//    // MARK: - NSFetchedResultsControllerDelegate
+//    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+//        if let updatedFavorites = coreDataManager.getAllNews() {
+//            self.favorites = updatedFavorites
+//            view?.displaySavedNews(updatedFavorites)  // Обновляем UI с новыми данными
+//        }
+//    }
 }
 

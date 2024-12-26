@@ -11,6 +11,7 @@ import UIKit
 class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     
     static var reuseId: String = "CustomNewsCell"
+    var favoriteButtonAction: (() -> Void)?
     
     lazy var newsImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -68,15 +69,29 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setImage(UIImage(systemName: "star"), for: .normal)
-        $0.tintColor = .black
+        $0.setImage(UIImage(named: "myStar"), for: .normal)
+        $0.setImage(UIImage(named: "myStarFill"), for: .selected)
         $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
         $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        $0.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
         return $0
-    }(UIButton())
+    }(UIButton(primaryAction: nil))
+    
+    @objc private func toggleFavorite() {
+        isFavourite.isSelected.toggle()
+           
+           // Меняем цвет в зависимости от состояния
+           if isFavourite.isSelected {
+               isFavourite.tintColor = .cyan
+           } else {
+               isFavourite.tintColor = .black
+           }
+        favoriteButtonAction?()
+        print("Кнопка нажата")
+    }
     
     override init(frame: CGRect) {
-        super.init(frame: .zero)
+        super.init(frame: frame)
         setupItemsInContentViews()
         
     }
@@ -85,7 +100,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         contentView.backgroundColor = .systemGray5
         contentView.layer.cornerRadius = 20
         contentView.addSubViews(newsImage,HstackSiteData,mainLabel,descriptionLabel)
-        newsImage.addSubview(isFavourite)
+        contentView.addSubview(isFavourite)
         setupConstraints()
     }
     
@@ -119,6 +134,8 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
             
         ])
     }
+    
+   
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

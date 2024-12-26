@@ -173,9 +173,9 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate, UIScrol
         stopRefreshing()
     }
     
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        presenter.filterNews("") // Сбрасываем фильтр при отмене поиска
-    }
+//    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+//        presenter.filterNews("") // Сбрасываем фильтр при отмене поиска
+//    }
     
     func reloadData() {
         newsCollection.reloadData()
@@ -198,6 +198,11 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.mainLabel.text = news.title
         cell.descriptionLabel.text = news.description
         cell.websiteLabel.text = news.url
+        cell.isFavourite.isSelected = news.isFavorite 
+        cell.favoriteButtonAction = { [weak self] in
+            self?.presenter.toggleFavorite(for: news)
+            print("Saved to favorites: \(news.title)")
+        }
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -2,7 +2,7 @@
 //  NewsEntity+CoreDataClass.swift
 //  NewsPostVKADA
 //
-//  Created by сонный on 25.12.2024.
+//  Created by Дима Люфт on 26.12.2024.
 //
 //
 
@@ -19,7 +19,6 @@ extension NewsEntity {
         return NSFetchRequest<NewsEntity>(entityName: "NewsEntity")
     }
 
-    @NSManaged public var attribute: String?
     @NSManaged public var datePublicationPost: Date?
     @NSManaged public var descriptionText: String?
     @NSManaged public var imageURL: String?

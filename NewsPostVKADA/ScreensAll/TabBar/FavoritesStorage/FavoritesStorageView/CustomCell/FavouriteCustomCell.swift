@@ -9,7 +9,7 @@ import UIKit
 
 class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     static var reuseId: String = "FavouriteCustomCell"
-    
+    var favoriteButtonAction: (() -> Void)?
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -67,12 +67,26 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setImage(UIImage(systemName: "star"), for: .normal)
-        $0.tintColor = .black
-        $0.widthAnchor.constraint(equalToConstant: 21).isActive = true
-        $0.heightAnchor.constraint(equalToConstant: 21).isActive = true
+        $0.setImage(UIImage(named: "myStar"), for: .normal)
+        $0.setImage(UIImage(named: "myStarFill"), for: .selected)
+        $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        $0.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
         return $0
-    }(UIButton())
+    }(UIButton(primaryAction: nil))
+    
+    @objc private func toggleFavorite() {
+        isFavourite.isSelected.toggle()
+           
+           // Меняем цвет в зависимости от состояния
+           if isFavourite.isSelected {
+               isFavourite.tintColor = .cyan
+           } else {
+               isFavourite.tintColor = .black
+           }
+        favoriteButtonAction?()
+        print("Кнопка нажата")
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -83,16 +97,17 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
         contentView.backgroundColor = .newLightGrey
         contentView.layer.cornerRadius = 20
         contentView.addSubViews(FavouriteImage,HstackSiteData,mainLabel,descriptionLabel)
-        FavouriteImage.addSubview(isFavourite)
+        contentView.addSubview(isFavourite)
         setupConstraints()
     }
     
-    func configureElements(items: NewsEntity) {
-        FavouriteImage.image = UIImage(named: items.imageURL ?? "FavouriteImage.image - что-то пошло не так")
-        datePublication.text = items.datePublicationPost?.description
+    func configureElements(items: NewsArticle) {
+        guard let url = URL(string: items.urlToImage ?? "") else { return }
+        FavouriteImage.sd_setImage(with: url)
+        datePublication.text = items.publishedAt.toReadableDate()
         mainLabel.text = items.title
-        descriptionLabel.text = items.descriptionText
-        websiteLabel.text = items.website
+        descriptionLabel.text = items.description
+        websiteLabel.text = items.url
     }
     
     func setupConstraints() {

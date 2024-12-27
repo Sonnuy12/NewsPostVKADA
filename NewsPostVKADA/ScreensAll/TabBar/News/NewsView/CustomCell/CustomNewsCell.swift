@@ -65,12 +65,10 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     }(UILabel())
     
   
-
-    
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setImage(UIImage(named: "myStar"), for: .normal)
-        $0.setImage(UIImage(named: "myStarFill"), for: .selected)
+//        $0.setImage(UIImage(named: "myStarFill"), for: .selected)
         $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
         $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
         $0.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
@@ -80,11 +78,12 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     @objc private func toggleFavorite() {
         isFavourite.isSelected.toggle()
            
-           // Меняем цвет в зависимости от состояния
+            //Меняем цвет в зависимости от состояния
            if isFavourite.isSelected {
-               isFavourite.tintColor = .cyan
+               isFavourite.setImage(UIImage(named: "myStarFill"), for: .normal)
            } else {
-               isFavourite.tintColor = .black
+               isFavourite.setImage(UIImage(named: "myStar"), for: .normal)
+              
            }
         favoriteButtonAction?()
         print("Кнопка нажата")
@@ -95,7 +94,17 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         setupItemsInContentViews()
         
     }
-    
+    func update(model: NewsArticle) {
+            datePublication.text =  model.publishedAt.toReadableDate() ?? "Неизвестная дата"
+            mainLabel.text = model.title
+            descriptionLabel.text = model.description
+            websiteLabel.text = model.url
+            if model.isFavorite {
+                isFavourite.setImage(UIImage(named: "myStarFill"), for: .selected)
+            } else {
+                isFavourite.setImage(UIImage(named: "myStar"), for: .normal)
+            }
+        }
     private func setupItemsInContentViews() {
         contentView.backgroundColor = .systemGray5
         contentView.layer.cornerRadius = 20
@@ -134,8 +143,6 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
             
         ])
     }
-    
-   
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

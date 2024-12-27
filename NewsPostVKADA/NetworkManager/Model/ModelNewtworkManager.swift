@@ -26,4 +26,7 @@ struct NewsArticle: Codable {
         case publishedAt
         case url
     }
+//    mutating func changeFaroriteState(_ flag: Bool) {
+//            isFavorite = flag
+//        }
 }

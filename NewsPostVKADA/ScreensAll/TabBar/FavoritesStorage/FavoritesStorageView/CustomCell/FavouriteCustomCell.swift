@@ -8,6 +8,9 @@
 import UIKit
 
 class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
+    
+   
+    
     static var reuseId: String = "FavouriteCustomCell"
     var favoriteButtonAction: (() -> Void)?
     required init?(coder: NSCoder) {
@@ -77,13 +80,6 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     
     @objc private func toggleFavorite() {
         isFavourite.isSelected.toggle()
-           
-           // Меняем цвет в зависимости от состояния
-           if isFavourite.isSelected {
-               isFavourite.tintColor = .cyan
-           } else {
-               isFavourite.tintColor = .black
-           }
         favoriteButtonAction?()
         print("Кнопка нажата")
     }

@@ -12,6 +12,7 @@ protocol FavoritesStorageViewProtocol: AnyObject {
     func displaySavedNews(_ news: [NewsArticle])
     func showAlert()
     var filteredFavorites: [NewsArticle] {get set}
+    func reloadCollection()
 }
 
 class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISearchBarDelegate, UIScrollViewDelegate {
@@ -95,7 +96,10 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
         presenter.loadFavorites()
         favouriteCollection.reloadData()
        }
-
+    
+    func reloadCollection() {
+        favouriteCollection.reloadData()
+    }
        
     
     func displaySavedNews(_ news: [NewsArticle]) {
@@ -154,6 +158,7 @@ class FavoritesStorageView: UIViewController, FavoritesStorageViewProtocol, UISe
     @objc private func refreshData() {
        // presenter.loadFavorites()
         // останавливаю анимацию прямо во view
+        reloadCollection()
         favouriteCollection.refreshControl?.endRefreshing()
     }
     //для кнопочки выхода
@@ -183,7 +188,10 @@ extension FavoritesStorageView: UICollectionViewDelegate, UICollectionViewDataSo
         cell.isFavourite.isSelected = savedNews.isFavorite
         cell.favoriteButtonAction = { [weak self] in
             self?.presenter.deleteFavoriteNews(savedNews)
+            self?.filteredFavorites.remove(at: indexPath.item)
             print("новость удалена \(savedNews.title)")
+            self?.favouriteCollection.reloadData()
+            print("Обновил таблицу ")
         }
         return cell
     }

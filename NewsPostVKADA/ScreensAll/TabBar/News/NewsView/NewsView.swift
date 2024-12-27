@@ -98,7 +98,20 @@ class NewsView: UIViewController, NewsViewProtocol, UISearchBarDelegate, UIScrol
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        let favoriteArray = CoreDataManager.shared.fetchFavorites()
+              
+              for favoriteNews in favoriteArray {
+                  for (index, var news) in presenter.newsList.enumerated() {
+                      if news.url == favoriteNews.url {
+                          news.isFavorite = favoriteNews.isFavorite  //changeFaroriteState(favoriteNews.isFavorite)
+                          presenter.newsList[index] = news
+                      } else {
+                          news.isFavorite = false
+                          presenter.newsList[index] = news
+                      }
+                  }
+              }
+        newsCollection.reloadData()
     }
     
     private func setupConstaints() {
@@ -193,12 +206,12 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
         let news = presenter.newsList[indexPath.item]
         guard let url = URL(string: news.urlToImage ?? "") else { return cell }
         cell.newsImage.sd_setImage(with: url)
-        
-        cell.datePublication.text =  news.publishedAt.toReadableDate() ?? "Неизвестная дата"
-        cell.mainLabel.text = news.title
-        cell.descriptionLabel.text = news.description
-        cell.websiteLabel.text = news.url
-        cell.isFavourite.isSelected = news.isFavorite 
+        cell.update(model: news)
+//        cell.datePublication.text =  news.publishedAt.toReadableDate() ?? "Неизвестная дата"
+//        cell.mainLabel.text = news.title
+//        cell.descriptionLabel.text = news.description
+//        cell.websiteLabel.text = news.url
+//        cell.isFavourite.isSelected = news.isFavorite 
         cell.favoriteButtonAction = { [weak self] in
             self?.presenter.toggleFavorite(for: news)
             print("Saved to favorites: \(news.title)")
@@ -215,6 +228,7 @@ extension NewsView: UICollectionViewDelegate, UICollectionViewDataSource {
 //refresh
 extension NewsView {
     func stopRefreshing() {
+        self.newsCollection.reloadData()
         newsCollection.refreshControl?.endRefreshing()
     }
 }

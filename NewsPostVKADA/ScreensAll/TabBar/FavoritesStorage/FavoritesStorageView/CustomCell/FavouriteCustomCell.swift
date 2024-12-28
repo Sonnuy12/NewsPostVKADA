@@ -70,13 +70,15 @@ class FavouriteCustomCell: UICollectionViewCell,SetupNewCell {
     
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setImage(UIImage(named: "myStar"), for: .normal)
-        $0.setImage(UIImage(named: "myStarFill"), for: .selected)
-        $0.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        $0.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        $0.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        $0.widthAnchor.constraint(equalToConstant: 48).isActive = true
+        $0.tintColor = .black
+
+        $0.heightAnchor.constraint(equalToConstant: 48).isActive = true
         $0.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
         return $0
-    }(UIButton(primaryAction: nil))
+    }(UIButton())
     
     @objc private func toggleFavorite() {
         isFavourite.isSelected.toggle()

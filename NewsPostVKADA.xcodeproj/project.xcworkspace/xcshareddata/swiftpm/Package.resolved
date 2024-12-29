@@ -1,0 +1,24 @@
+{
+  "originHash" : "b80a01374a8140f864cb035080afb212107ddf3676e401e523b432a666c6c4b6",
+  "pins" : [
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage",
+      "state" : {
+        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
+        "version" : "5.20.0"
+      }
+    },
+    {
+      "identity" : "vkid-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/VKCOM/vkid-ios-sdk.git",
+      "state" : {
+        "revision" : "70d4eb5dc3c98fc09aef303d628272c8e314b8cd",
+        "version" : "2.3.1"
+      }
+    }
+  ],
+  "version" : 3
+}

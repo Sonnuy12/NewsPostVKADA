@@ -12,7 +12,26 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     
     static var reuseId: String = "CustomNewsCell"
     var favoriteButtonAction: (() -> Void)?
-    
+    var model: NewsArticle? {
+        willSet(model){
+            datePublication.text =  model?.publishedAt.toReadableDate() ?? "Неизвестная дата"
+            mainLabel.text = model?.title
+            descriptionLabel.text = model?.description
+            websiteLabel.text = model?.url
+            
+            if let model, model.isFavorite {
+                isFavourite.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
+                isFavourite.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .selected)
+                isFavourite.layoutIfNeeded()
+                print("set btn")
+            } else {
+                isFavourite.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+                isFavourite.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
+                isFavourite.layoutIfNeeded()
+            }
+            
+        }
+    }
     lazy var newsImage: UIImageView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.contentMode = .scaleAspectFill
@@ -67,8 +86,7 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
   
     lazy var isFavourite: UIButton = {
         $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        $0.setImage(UIImage(systemName: "star.fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
+        
         $0.widthAnchor.constraint(equalToConstant: 48).isActive = true
         $0.tintColor = .black
 
@@ -76,6 +94,13 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
         $0.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
         return $0
     }(UIButton())
+    
+    override func prepareForReuse() {
+        model = nil
+        isFavourite.setImage(UIImage(systemName: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        isFavourite.layoutIfNeeded()
+        print("reuse")
+    }
     
     @objc private func toggleFavorite() {
         isFavourite.isSelected.toggle()
@@ -86,19 +111,21 @@ class CustomNewsCell: UICollectionViewCell, SetupNewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupItemsInContentViews()
-        
     }
-    func update(model: NewsArticle) {
-            datePublication.text =  model.publishedAt.toReadableDate() ?? "Неизвестная дата"
-            mainLabel.text = model.title
-            descriptionLabel.text = model.description
-            websiteLabel.text = model.url
-            if model.isFavorite {
-                isFavourite.setImage(UIImage(named: "myStarFill"), for: .selected)
-            } else {
-                isFavourite.setImage(UIImage(named: "myStar"), for: .normal)
-            }
-        }
+    
+    
+//    func update(model: NewsArticle) {
+//
+//            datePublication.text =  model.publishedAt.toReadableDate() ?? "Неизвестная дата"
+//            mainLabel.text = model.title
+//            descriptionLabel.text = model.description
+//            websiteLabel.text = model.url
+//            if model.isFavorite {
+//                isFavourite.setImage(UIImage(named: "myStarFill"), for: .selected)
+//            } else {
+//                isFavourite.setImage(UIImage(named: "myStar"), for: .normal)
+//            }
+//        }
     private func setupItemsInContentViews() {
         contentView.backgroundColor = .systemGray5
         contentView.layer.cornerRadius = 20

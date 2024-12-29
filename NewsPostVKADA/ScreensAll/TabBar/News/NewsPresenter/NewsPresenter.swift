@@ -76,16 +76,6 @@ class NewsPresenter: NewsPresenterProtocol {
         }
     }
     
-    //????? - нужно ли?
-//    func saveToFavorites(article: NewsArticle) {
-//            CoreDataManager.shared.saveToFavorites(news: article)
-//        }
-//
-//    func fetchFavorites() -> [NewsArticle] {
-//            return CoreDataManager.shared.fetchFavorites()
-//        }
-   
-    
     func toggleFavorite(for news: NewsArticle) {
         if let index = favouriteNews.firstIndex(where: { $0.url == news.url }) {
             favouriteNews.remove(at: index)
@@ -94,6 +84,24 @@ class NewsPresenter: NewsPresenterProtocol {
             favouriteNews.append(news)
             CoreDataManager.shared.addNews(news)
         }
+        
+        let favoriteArray = CoreDataManager.shared.fetchFavorites()
+        for favoriteNews in favoriteArray {
+            for (index, var news) in newsList.enumerated() {
+                if news.url == favoriteNews.url {
+                    news.isFavorite = favoriteNews.isFavorite
+                  newsList[index] = news
+                } else {
+                    news.isFavorite = false
+                  newsList[index] = news
+                }
+            }
+        }
+
+        ///Вот тут снова обновить масси newsList
+        ///прогнать новости, найти наличие news и убрать
+        ///зведочку с нее
+        ///и вернуть новый массив на главную
     }
     
     func refreshNews(for query: String) {
@@ -117,27 +125,7 @@ class NewsPresenter: NewsPresenterProtocol {
             }
         }
     }
-    
-//    func filterNews(_ keyword: String) {
-//        if keyword.isEmpty {
-//            filteredNews = newsList
-//        } else {
-//            filteredNews = newsList.filter { news in
-//                news.title.localizedCaseInsensitiveContains(keyword) == true ||
-//                news.description.localizedCaseInsensitiveContains(keyword) == true
-//            }
-//        }
-//        view?.reloadData()
-   // }
-    
-//    func numberOfItems() -> Int {
-//        return filteredNews.count
-//    }
-    
-//    func news(at indexPath: IndexPath) -> NewsArticle {
-//        return filteredNews[indexPath.item]
-//    }
-    
+        
     func handleActionButtonTap() {
         print("алерт")
         view?.showAlert()  //даем команду view показать алерт
@@ -154,4 +142,3 @@ class NewsPresenter: NewsPresenterProtocol {
         }
     }
 }
-

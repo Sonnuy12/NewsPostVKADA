@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		321942762D160BB200FD04CF /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 321942752D160BB200FD04CF /* SDWebImage */; };
+		321942782D160BB200FD04CF /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 321942772D160BB200FD04CF /* SDWebImageMapKit */; };
+		F289ABF52D10603B001BFF13 /* VKID in Frameworks */ = {isa = PBXBuildFile; productRef = F289ABF42D10603B001BFF13 /* VKID */; };
+		F289ABF72D10603B001BFF13 /* VKIDCore in Frameworks */ = {isa = PBXBuildFile; productRef = F289ABF62D10603B001BFF13 /* VKIDCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		F2B492CF2D0657F000FED4E3 /* NewsPostVKADA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewsPostVKADA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +43,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				321942762D160BB200FD04CF /* SDWebImage in Frameworks */,
+				F289ABF52D10603B001BFF13 /* VKID in Frameworks */,
+				321942782D160BB200FD04CF /* SDWebImageMapKit in Frameworks */,
+				F289ABF72D10603B001BFF13 /* VKIDCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +89,10 @@
 			);
 			name = NewsPostVKADA;
 			packageProductDependencies = (
+				F289ABF42D10603B001BFF13 /* VKID */,
+				F289ABF62D10603B001BFF13 /* VKIDCore */,
+				321942752D160BB200FD04CF /* SDWebImage */,
+				321942772D160BB200FD04CF /* SDWebImageMapKit */,
 			);
 			productName = NewsPostVKADA;
 			productReference = F2B492CF2D0657F000FED4E3 /* NewsPostVKADA.app */;
@@ -99,15 +114,18 @@
 				};
 			};
 			buildConfigurationList = F2B492CA2D0657EF00FED4E3 /* Build configuration list for PBXProject "NewsPostVKADA" */;
-			developmentRegion = en;
+			developmentRegion = ru;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = F2B492C62D0657EF00FED4E3;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */,
+				321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F2B492D02D0657F000FED4E3 /* Products */;
@@ -197,6 +215,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -260,6 +279,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -333,6 +353,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.20.0;
+			};
+		};
+		F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/VKCOM/vkid-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		321942752D160BB200FD04CF /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		321942772D160BB200FD04CF /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 321942742D160BB200FD04CF /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
+		F289ABF42D10603B001BFF13 /* VKID */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */;
+			productName = VKID;
+		};
+		F289ABF62D10603B001BFF13 /* VKIDCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F289ABF32D10603B001BFF13 /* XCRemoteSwiftPackageReference "vkid-ios-sdk" */;
+			productName = VKIDCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F2B492C72D0657EF00FED4E3 /* Project object */;
 }
